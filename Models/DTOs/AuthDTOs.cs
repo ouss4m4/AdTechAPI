@@ -1,3 +1,5 @@
+using AdTechAPI.Enums;
+
 using System.ComponentModel.DataAnnotations;
 
 namespace AdTechAPI.Models.DTOs
@@ -37,4 +39,4 @@ namespace AdTechAPI.Models.DTOs
         public UserRole Role { get; set; }
         public int ClientId { get; set; }
     }
-} 
+}

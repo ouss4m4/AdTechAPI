@@ -29,6 +29,10 @@ public class AppDbContext : DbContext
             .HasForeignKey(c => c.AdvertiserId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<Campaign>()
+                    .Property(c => c.Status)
+                    .HasConversion<int>();
+
         // Configure many-to-many relationship for Verticals
         modelBuilder.Entity<Campaign>()
             .HasMany(c => c.Verticals)

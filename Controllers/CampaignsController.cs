@@ -2,6 +2,7 @@ using AdTechAPI.Models;
 using AdTechAPI.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using AdTechAPI.Enums;
 
 
 namespace AdTechAPI.Controllers
@@ -31,8 +32,8 @@ namespace AdTechAPI.Controllers
             //     Id = c.Id,
             //     Name = c.Name,
             //     AdvertiserId = c.AdvertiserId,
-            //     Description = c.Description,
-            //     IsActive = c.IsActive,
+            //     Notes = c.Notes,
+            //     Status = c.Status,
             //     Budget = c.Budget,
             //     DailyBudget = c.DailyBudget,
 
@@ -64,8 +65,8 @@ namespace AdTechAPI.Controllers
                 Id = campaign.Id,
                 Name = campaign.Name,
                 AdvertiserId = campaign.AdvertiserId,
-                Description = campaign.Description,
-                IsActive = campaign.IsActive,
+                Notes = campaign.Notes,
+                Status = (int)campaign.Status,
                 Budget = campaign.Budget,
                 DailyBudget = campaign.DailyBudget,
 
@@ -92,8 +93,8 @@ namespace AdTechAPI.Controllers
         //         Id = c.Id,
         //         Name = c.Name,
         //         AdvertiserId = c.AdvertiserId,
-        //         Description = c.Description,
-        //         IsActive = c.IsActive,
+        //         Notes = c.Notes,
+        //         Status = c.Status,
         //         Budget = c.Budget,
         //         DailyBudget = c.DailyBudget,
         //         CreatedAt = c.CreatedAt,
@@ -133,7 +134,7 @@ namespace AdTechAPI.Controllers
             {
                 Name = request.Name,
                 AdvertiserId = request.AdvertiserId,
-                Description = request.Description,
+                Notes = request.Notes,
                 Budget = request.Budget,
                 DailyBudget = request.DailyBudget > 0 ? request.DailyBudget : 0,
                 Platforms = request.Platforms.ToList(),
@@ -154,8 +155,8 @@ namespace AdTechAPI.Controllers
                 Id = campaign.Id,
                 Name = campaign.Name,
                 AdvertiserId = campaign.AdvertiserId,
-                Description = campaign.Description,
-                IsActive = campaign.IsActive,
+                Notes = campaign.Notes,
+                Status = (int)campaign.Status,
                 Budget = campaign.Budget,
                 DailyBudget = campaign.DailyBudget,
                 CreatedAt = campaign.CreatedAt,
@@ -181,8 +182,8 @@ namespace AdTechAPI.Controllers
         //     }
 
         //     if (request.Name != null) campaign.Name = request.Name;
-        //     if (request.Description != null) campaign.Description = request.Description;
-        //     if (request.IsActive.HasValue) campaign.IsActive = request.IsActive.Value;
+        //     if (request.Notes != null) campaign.Notes = request.Notes;
+        //     if (request.Status.HasValue) campaign.Status = request.Status.Value;
         //     if (request.Budget.HasValue) campaign.Budget = request.Budget.Value;
         //     if (request.DailyBudget.HasValue) campaign.DailyBudget = request.DailyBudget.Value;
 

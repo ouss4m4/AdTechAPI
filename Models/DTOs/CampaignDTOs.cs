@@ -11,7 +11,7 @@ namespace AdTechAPI.Models.DTOs
         [Required]
         public int AdvertiserId { get; set; }
 
-        public string? Description { get; set; }
+        public string? Notes { get; set; }
 
         [Required]
         [Range(0, double.MaxValue)]
@@ -45,9 +45,9 @@ namespace AdTechAPI.Models.DTOs
         [StringLength(100)]
         public string? Name { get; set; }
 
-        public string? Description { get; set; }
+        public string? Notes { get; set; }
 
-        public bool? IsActive { get; set; }
+        public int Status { get; set; }
 
         [Range(0, double.MaxValue)]
         public decimal? Budget { get; set; }
@@ -75,8 +75,8 @@ namespace AdTechAPI.Models.DTOs
         public int Id { get; set; }
         public string Name { get; set; } = "";
         public int AdvertiserId { get; set; }
-        public string? Description { get; set; }
-        public bool IsActive { get; set; }
+        public string? Notes { get; set; }
+        public int Status { get; set; }
         public decimal Budget { get; set; }
         public decimal DailyBudget { get; set; }
 

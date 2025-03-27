@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
+using AdTechAPI.Enums;
 
 namespace AdTechAPI.Controllers
 {

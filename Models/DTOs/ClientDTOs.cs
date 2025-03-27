@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using AdTechAPI.Enums;
 
 namespace AdTechAPI.Models.DTOs
 {
