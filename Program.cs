@@ -7,12 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-// Add services to the container.
-// builder.Services.AddControllers().AddJsonOptions(options =>
-// {
-//     // Configure the JSON serializer to handle circular references
-//     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-// });
+
 
 // Connection string to PostgreSQL
 var connectionString = builder.Configuration.GetConnectionString("PostgresDb");
