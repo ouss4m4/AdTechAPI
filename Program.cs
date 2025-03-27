@@ -1,10 +1,20 @@
 using AdTechAPI.Extensions;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "AdTech API",
+        Version = "v1",
+        Description = "AdTech API for managing campaigns, platforms, and verticals"
+    });
+});
 
 // Add our custom service extensions
 builder.Services.AddDatabaseServices(builder.Configuration);
@@ -18,10 +28,14 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "AdTech API V1");
+        c.RoutePrefix = "swagger";
+    });
 }
 
-app.UseHttpsRedirection();
 // Add authentication middleware
 app.UseAuthentication();
 app.UseAuthorization();

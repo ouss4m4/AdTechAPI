@@ -1,3 +1,13 @@
+camp sample
+
+{
+"name": "Adobe Coupon Code",
+"AdvertiserId": 1,
+"Platforms": [1, 3],
+"Verticals": [4, 5, 6],
+"Countries": [226, 227]
+}
+
 Let’s break this down into clear backend tasks.
 
 1. Authentication & Security

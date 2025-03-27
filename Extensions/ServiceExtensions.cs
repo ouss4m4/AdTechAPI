@@ -51,6 +51,11 @@ namespace AdTechAPI.Extensions
             IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("PostgresDb");
+            // Enable dynamic JSON serialization
+            var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
+            dataSourceBuilder.EnableDynamicJson();
+            var dataSource = dataSourceBuilder.Build(); // Build the configured data source
+
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(connectionString));
 
