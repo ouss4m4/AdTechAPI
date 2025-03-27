@@ -41,18 +41,18 @@ namespace AdTechAPI.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<ActionResult<User>> CreateUser(User user)
-        {
-            // Validate and hash password here before saving
-            user.CreatedAt = DateTime.UtcNow;
-            user.UpdatedAt = DateTime.UtcNow;
+        // [HttpPost]
+        // public async Task<ActionResult<User>> CreateUser(User user)
+        // {
+        //     // Validate and hash password here before saving
+        //     user.CreatedAt = DateTime.UtcNow;
+        //     user.UpdatedAt = DateTime.UtcNow;
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+        //     _context.Users.Add(user);
+        //     await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
-        }
+        //     return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+        // }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, User user)
