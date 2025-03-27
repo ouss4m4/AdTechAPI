@@ -28,6 +28,11 @@ namespace AdTechAPI.Extensions
                             Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ??
                                 throw new InvalidOperationException("JWT Key not found")))
                     };
+
+                    // Map our custom claims to standard identity claims
+                    options.MapInboundClaims = false;  // Disable default claim mapping
+                    options.TokenValidationParameters.NameClaimType = "name";
+                    options.TokenValidationParameters.RoleClaimType = "role";
                 });
 
             return services;
@@ -48,6 +53,24 @@ namespace AdTechAPI.Extensions
             var connectionString = configuration.GetConnectionString("PostgresDb");
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(connectionString));
+
+            return services;
+        }
+
+        public static IServiceCollection AddAuthorizationPolicies(
+            this IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdminRole", policy =>
+                    policy.RequireClaim("role", "Admin"));
+
+                options.AddPolicy("RequireStaffRole", policy =>
+                    policy.RequireClaim("role", new[] { "Admin", "Moderator" }));
+
+                options.AddPolicy("SameClientAccess", policy =>
+                    policy.RequireClaim("cid")); // Will check if client IDs match in handler
+            });
 
             return services;
         }

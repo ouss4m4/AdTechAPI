@@ -28,11 +28,11 @@ namespace AdTechAPI.Services
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role.ToString()),
-                new Claim("ClientId", user.ClientId.ToString())
+                new Claim("sub", user.Id.ToString()),
+                new Claim("name", user.Username),
+                new Claim("email", user.Email),
+                new Claim("role", user.Role.ToString()),
+                new Claim("cid", user.ClientId.ToString())
             };
 
             var token = new JwtSecurityToken(
