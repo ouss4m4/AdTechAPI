@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace AdTechAPI.Models  // Define the namespace here
 {
     public class Client

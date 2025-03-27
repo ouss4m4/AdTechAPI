@@ -24,18 +24,10 @@ public class AppDbContext : DbContext
             .HasConversion<int>();
 
         modelBuilder.Entity<Campaign>()
-            .HasOne(c => c.Advertiser)  // Campaign has one Advertiser (Client)
-            .WithMany()                 // Client can have many Campaigns
-            .HasForeignKey(c => c.AdvertiserId) // Foreign key is AdvertiserId
+            .HasOne(c => c.Advertiser)
+            .WithMany()
+            .HasForeignKey(c => c.AdvertiserId)
             .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Campaign>()
-            .Property(c => c.Platforms)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
-                v => JsonSerializer.Deserialize<List<Platform>>(v, (JsonSerializerOptions?)null) ?? new List<Platform>()
-            )
-            .HasColumnType("jsonb");
 
         // Configure many-to-many relationship for Verticals
         modelBuilder.Entity<Campaign>()
@@ -43,7 +35,7 @@ public class AppDbContext : DbContext
             .WithMany(v => v.Campaigns)
             .UsingEntity(j => j.ToTable("CampaignVerticals"));
 
-        // Configure JSON columns
+        // Configure JSON columns (POSTGRES JSONB)
         modelBuilder.Entity<Campaign>()
             .Property(c => c.Platforms)
             .HasColumnType("jsonb");

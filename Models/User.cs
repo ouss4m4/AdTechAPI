@@ -1,4 +1,3 @@
-
 namespace AdTechAPI.Models  // Define the namespace here
 {
     public class User

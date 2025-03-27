@@ -29,15 +29,15 @@ namespace AdTechAPI.Models.DTOs
         [Required]
         [MinLength(1)]
         [MaxLength(3)]
-        public required Platform[] Platforms { get; set; }
+        public required int[] Platforms { get; set; } = [];
 
         [Required]
         [MinLength(1)]
-        public required int[] Verticals { get; set; }
+        public int[] Verticals { get; set; } = [];
 
         [Required]
         [MinLength(1)]
-        public required int[] Countries { get; set; }
+        public required int[] Countries { get; set; } = [];
     }
 
     public class UpdateCampaignRequest
@@ -61,7 +61,7 @@ namespace AdTechAPI.Models.DTOs
 
         [MinLength(1)]
         [MaxLength(3)]
-        public string[]? Platforms { get; set; }
+        public int[]? Platforms { get; set; }
 
         [MinLength(1)]
         public int[]? Verticals { get; set; }
@@ -73,17 +73,16 @@ namespace AdTechAPI.Models.DTOs
     public class CampaignResponse
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
         public int AdvertiserId { get; set; }
         public string? Description { get; set; }
         public bool IsActive { get; set; }
         public decimal Budget { get; set; }
         public decimal DailyBudget { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public Platform[] Platforms { get; set; } = [];
+        public int[] Platforms { get; set; } = [];
         public int[] Verticals { get; set; } = [];
         public string[] VerticalNames { get; set; } = [];
         public int[] Countries { get; set; } = [];

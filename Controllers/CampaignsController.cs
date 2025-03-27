@@ -35,8 +35,7 @@ namespace AdTechAPI.Controllers
             //     IsActive = c.IsActive,
             //     Budget = c.Budget,
             //     DailyBudget = c.DailyBudget,
-            //     StartDate = c.StartDate,
-            //     EndDate = c.EndDate,
+
             //     CreatedAt = c.CreatedAt,
             //     UpdatedAt = c.UpdatedAt,
             //     Platforms = JsonSerializer.Deserialize<string[]>(c.Platforms != null ? JsonSerializer.Serialize(c.Platforms) : "[]") ?? [],
@@ -69,14 +68,13 @@ namespace AdTechAPI.Controllers
                 IsActive = campaign.IsActive,
                 Budget = campaign.Budget,
                 DailyBudget = campaign.DailyBudget,
-                StartDate = campaign.StartDate,
-                EndDate = campaign.EndDate,
+
                 CreatedAt = campaign.CreatedAt,
                 UpdatedAt = campaign.UpdatedAt,
-                Platforms = campaign.Platforms.ToArray(),
-                Verticals = campaign.Verticals.Select(v => v.Id).ToArray(),
-                VerticalNames = campaign.Verticals.Select(v => v.Name).ToArray(),
-                Countries = campaign.Countries.ToArray()
+                // Platforms = campaign.Platforms.ToArray(),
+                // Verticals = campaign.Verticals.Select(v => v.Id).ToArray(),
+                // VerticalNames = campaign.Verticals.Select(v => v.Name).ToArray(),
+                // Countries = campaign.Countries.ToArray()
             };
         }
 
@@ -98,8 +96,6 @@ namespace AdTechAPI.Controllers
         //         IsActive = c.IsActive,
         //         Budget = c.Budget,
         //         DailyBudget = c.DailyBudget,
-        //         StartDate = c.StartDate,
-        //         EndDate = c.EndDate,
         //         CreatedAt = c.CreatedAt,
         //         UpdatedAt = c.UpdatedAt,
         //         Platforms = JsonSerializer.Deserialize<string[]>(c.Platforms ?? "[]"),
@@ -139,9 +135,7 @@ namespace AdTechAPI.Controllers
                 AdvertiserId = request.AdvertiserId,
                 Description = request.Description,
                 Budget = request.Budget,
-                DailyBudget = request.DailyBudget,
-                StartDate = request.StartDate,
-                EndDate = request.EndDate,
+                DailyBudget = request.DailyBudget > 0 ? request.DailyBudget : 0,
                 Platforms = request.Platforms.ToList(),
                 Countries = request.Countries.ToList(),
                 Verticals = verticals,
@@ -151,6 +145,7 @@ namespace AdTechAPI.Controllers
 
             campaign.Validate();
 
+            // return Ok(campaign);
             _context.Campaigns.Add(campaign);
             await _context.SaveChangesAsync();
 
@@ -163,8 +158,6 @@ namespace AdTechAPI.Controllers
                 IsActive = campaign.IsActive,
                 Budget = campaign.Budget,
                 DailyBudget = campaign.DailyBudget,
-                StartDate = campaign.StartDate,
-                EndDate = campaign.EndDate,
                 CreatedAt = campaign.CreatedAt,
                 UpdatedAt = campaign.UpdatedAt,
                 Platforms = request.Platforms,
@@ -192,8 +185,7 @@ namespace AdTechAPI.Controllers
         //     if (request.IsActive.HasValue) campaign.IsActive = request.IsActive.Value;
         //     if (request.Budget.HasValue) campaign.Budget = request.Budget.Value;
         //     if (request.DailyBudget.HasValue) campaign.DailyBudget = request.DailyBudget.Value;
-        //     if (request.StartDate.HasValue) campaign.StartDate = request.StartDate.Value;
-        //     if (request.EndDate.HasValue) campaign.EndDate = request.EndDate.Value;
+
 
         //     if (request.Platforms != null)
         //     {

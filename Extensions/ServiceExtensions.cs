@@ -57,7 +57,7 @@ namespace AdTechAPI.Extensions
             var dataSource = dataSourceBuilder.Build(); // Build the configured data source
 
             services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(connectionString));
+                options.UseNpgsql(dataSource));
 
             return services;
         }
