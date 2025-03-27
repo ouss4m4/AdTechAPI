@@ -37,6 +37,17 @@ namespace AdTechAPI.Controllers
                 return BadRequest("Invalid client ID");
             }
 
+            // Set user role based on client type
+            UserRole userRole;
+            if (client.Type == ClientType.Owner)
+            {
+                userRole = UserRole.Admin;
+            }
+            else
+            {
+                userRole = UserRole.Regular;
+            }
+
             // Create new user
             var user = new User
             {
@@ -44,7 +55,7 @@ namespace AdTechAPI.Controllers
                 Email = request.Email,
                 PasswordHash = HashPassword(request.Password),
                 ClientId = request.ClientId,
-                Role = UserRole.Regular,
+                Role = userRole,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -101,4 +112,4 @@ namespace AdTechAPI.Controllers
             return HashPassword(password) == hash;
         }
     }
-} 
+}

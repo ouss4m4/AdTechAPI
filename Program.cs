@@ -8,8 +8,8 @@ builder.Services.AddOpenApi();
 
 // Add our custom service extensions
 builder.Services.AddDatabaseServices(builder.Configuration);
-builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddApplicationServices();
+builder.Services.AddJwtService(builder.Configuration);
 
 builder.Services.AddControllers();
 
@@ -22,7 +22,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 // Add authentication middleware
 app.UseAuthentication();
 app.UseAuthorization();

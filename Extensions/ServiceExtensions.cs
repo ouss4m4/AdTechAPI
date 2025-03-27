@@ -57,21 +57,12 @@ namespace AdTechAPI.Extensions
             return services;
         }
 
-        public static IServiceCollection AddAuthorizationPolicies(
-            this IServiceCollection services)
+        public static IServiceCollection AddJwtService(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("RequireAdminRole", policy =>
-                    policy.RequireClaim("role", "Admin"));
-
-                options.AddPolicy("RequireStaffRole", policy =>
-                    policy.RequireClaim("role", new[] { "Admin", "Moderator" }));
-
-                options.AddPolicy("SameClientAccess", policy =>
-                    policy.RequireClaim("cid")); // Will check if client IDs match in handler
-            });
-
+            services.AddScoped<IJwtService>(sp =>
+                new JwtService(configuration));
             return services;
         }
     }
