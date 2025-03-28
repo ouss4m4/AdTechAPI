@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using AdTechAPI.Enums;
 
 namespace AdTechAPI.Models.DTOs
 {
@@ -11,7 +12,14 @@ namespace AdTechAPI.Models.DTOs
         [Required]
         public int AdvertiserId { get; set; }
 
-        public string? Notes { get; set; }
+
+        [Required]
+        [MinLength(1)]
+        public int[] Verticals { get; set; } = [];
+
+        [Required]
+        public int LanderId { get; set; }
+
 
         [Required]
         [Range(0, double.MaxValue)]
@@ -21,19 +29,16 @@ namespace AdTechAPI.Models.DTOs
         [Range(0, double.MaxValue)]
         public decimal DailyBudget { get; set; }
 
-        [Required]
-        public DateTime StartDate { get; set; }
+        public string? Notes { get; set; }
 
-        public DateTime? EndDate { get; set; }
 
         [Required]
         [MinLength(1)]
         [MaxLength(3)]
         public required int[] Platforms { get; set; } = [];
 
-        [Required]
-        [MinLength(1)]
-        public int[] Verticals { get; set; } = [];
+
+        public CampaignStatus Status { get; set; }
 
         [Required]
         [MinLength(1)]

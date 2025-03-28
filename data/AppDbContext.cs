@@ -9,6 +9,8 @@ public class AppDbContext : DbContext
     public DbSet<Campaign> Campaigns { get; set; }
     public DbSet<Vertical> Verticals { get; set; }
 
+    public DbSet<Lander> Landers { get; set; }
+
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

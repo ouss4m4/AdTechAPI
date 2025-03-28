@@ -27,56 +27,40 @@ namespace AdTechAPI.Controllers
                 .Include(c => c.Verticals)
                 .ToListAsync();
             return Ok(campaigns);
-            // return Ok(campaigns.Select(c => new CampaignResponse
-            // {
-            //     Id = c.Id,
-            //     Name = c.Name,
-            //     AdvertiserId = c.AdvertiserId,
-            //     Notes = c.Notes,
-            //     Status = c.Status,
-            //     Budget = c.Budget,
-            //     DailyBudget = c.DailyBudget,
-
-            //     CreatedAt = c.CreatedAt,
-            //     UpdatedAt = c.UpdatedAt,
-            //     Platforms = JsonSerializer.Deserialize<string[]>(c.Platforms != null ? JsonSerializer.Serialize(c.Platforms) : "[]") ?? [],
-            //     VerticalIds = c.Verticals.Select(v => v.Id).ToArray(),
-            //     VerticalNames = c.Verticals.Select(v => v.Name).ToArray(),
-            //     Countries = JsonSerializer.Deserialize<string[]>(c.Countries ?? "[]") ?? []
-            // }));
         }
 
-        // GET: api/Campaigns/5
+
         [HttpGet("{id}")]
         public async Task<ActionResult<CampaignResponse>> GetCampaign(int id)
         {
             var campaign = await _context.Campaigns
                 .Include(c => c.Advertiser)
                 .Include(c => c.Verticals)
+                .Include(c => c.Lander)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (campaign == null)
             {
                 return NotFound();
             }
+            return Ok(campaign);
+            // return new CampaignResponse
+            // {
+            //     Id = campaign.Id,
+            //     Name = campaign.Name,
+            //     AdvertiserId = campaign.AdvertiserId,
+            //     Notes = campaign.Notes,
+            //     Status = (int)campaign.Status,
+            //     Budget = campaign.Budget,
+            //     DailyBudget = campaign.DailyBudget,
 
-            return new CampaignResponse
-            {
-                Id = campaign.Id,
-                Name = campaign.Name,
-                AdvertiserId = campaign.AdvertiserId,
-                Notes = campaign.Notes,
-                Status = (int)campaign.Status,
-                Budget = campaign.Budget,
-                DailyBudget = campaign.DailyBudget,
-
-                CreatedAt = campaign.CreatedAt,
-                UpdatedAt = campaign.UpdatedAt,
-                // Platforms = campaign.Platforms.ToArray(),
-                // Verticals = campaign.Verticals.Select(v => v.Id).ToArray(),
-                // VerticalNames = campaign.Verticals.Select(v => v.Name).ToArray(),
-                // Countries = campaign.Countries.ToArray()
-            };
+            //     CreatedAt = campaign.CreatedAt,
+            //     UpdatedAt = campaign.UpdatedAt,
+            //     Platforms = campaign.Platforms.ToArray(),
+            //     Verticals = campaign.Verticals.Select(v => v.Id).ToArray(),
+            //     VerticalNames = campaign.Verticals.Select(v => v.Name).ToArray(),
+            //     Countries = campaign.Countries.ToArray()
+            // };
         }
 
         // [HttpGet("Advertiser/{advertiserId}")]
@@ -134,6 +118,7 @@ namespace AdTechAPI.Controllers
             {
                 Name = request.Name,
                 AdvertiserId = request.AdvertiserId,
+                LanderId = request.LanderId,
                 Notes = request.Notes,
                 Budget = request.Budget,
                 DailyBudget = request.DailyBudget > 0 ? request.DailyBudget : 0,

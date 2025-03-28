@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace AdTechAPI.Models
 {
     public class Lander
@@ -6,9 +8,14 @@ namespace AdTechAPI.Models
         public required string Name { get; set; }
         public required string Url { get; set; }
 
-        public required int ClientId { get; set; }
+        public string? Notes { get; set; }
+        public required int AdvertiserId { get; set; }
 
-        public Client Client { get; set; }
+        // Configure foreign key relationship
+        [JsonIgnore]
+
+        public Client? Advertiser { get; set; }
+
 
     }
 }

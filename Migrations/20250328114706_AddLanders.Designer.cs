@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AdTechAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250328114706_AddLanders")]
+    partial class AddLanders
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,14 +112,11 @@ namespace AdTechAPI.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AdvertiserId")
+                    b.Property<int>("ClientId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Notes")
                         .HasColumnType("text");
 
                     b.Property<string>("Url")
@@ -125,7 +125,7 @@ namespace AdTechAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdvertiserId");
+                    b.HasIndex("ClientId");
 
                     b.ToTable("Landers");
                 });
@@ -231,13 +231,13 @@ namespace AdTechAPI.Migrations
 
             modelBuilder.Entity("AdTechAPI.Models.Lander", b =>
                 {
-                    b.HasOne("AdTechAPI.Models.Client", "Advertiser")
+                    b.HasOne("AdTechAPI.Models.Client", "Client")
                         .WithMany()
-                        .HasForeignKey("AdvertiserId")
+                        .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Advertiser");
+                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("AdTechAPI.Models.User", b =>

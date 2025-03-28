@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using AdTechAPI.Enums;
 
 namespace AdTechAPI.Models  // Define the namespace here
@@ -9,7 +10,7 @@ namespace AdTechAPI.Models  // Define the namespace here
         public ClientType Type { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        // [JsonIgnore]
+        [JsonIgnore]
         public ICollection<User> Users { get; set; } = [];
 
     }
