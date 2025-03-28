@@ -63,34 +63,7 @@ namespace AdTechAPI.Controllers
             // };
         }
 
-        // [HttpGet("Advertiser/{advertiserId}")]
-        // public async Task<ActionResult<IEnumerable<CampaignResponse>>> GetCampaignsByAdvertiser(int advertiserId)
-        // {
-        //     var campaigns = await _context.Campaigns
-        //         .Include(c => c.Advertiser)
-        //         .Include(c => c.Verticals)
-        //         .Where(c => c.AdvertiserId == advertiserId)
-        //         .ToListAsync();
 
-        //     return Ok(campaigns.Select(c => new CampaignResponse
-        //     {
-        //         Id = c.Id,
-        //         Name = c.Name,
-        //         AdvertiserId = c.AdvertiserId,
-        //         Notes = c.Notes,
-        //         Status = c.Status,
-        //         Budget = c.Budget,
-        //         DailyBudget = c.DailyBudget,
-        //         CreatedAt = c.CreatedAt,
-        //         UpdatedAt = c.UpdatedAt,
-        //         Platforms = JsonSerializer.Deserialize<string[]>(c.Platforms ?? "[]"),
-        //         VerticalIds = c.Verticals.Select(v => v.Id).ToArray(),
-        //         VerticalNames = c.Verticals.Select(v => v.Name).ToArray(),
-        //         Countries = JsonSerializer.Deserialize<string[]>(c.Countries ?? "[]")
-        //     }));
-        // }
-
-        // POST: api/Campaigns
         [HttpPost]
         public async Task<ActionResult<CampaignResponse>> CreateCampaign(CreateCampaignRequest request)
         {
@@ -153,74 +126,128 @@ namespace AdTechAPI.Controllers
             });
         }
 
-        // PUT: api/Campaigns/5
-        // [HttpPut("{id}")]
-        // public async Task<IActionResult> UpdateCampaign(int id, UpdateCampaignRequest request)
-        // {
-        //     var campaign = await _context.Campaigns
-        //         .Include(c => c.Verticals)
-        //         .FirstOrDefaultAsync(c => c.Id == id);
 
-        //     if (campaign == null)
-        //     {
-        //         return NotFound();
-        //     }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCampaign(int id, UpdateCampaignRequest request)
+        {
+            var campaign = await _context.Campaigns
+                .Include(c => c.Verticals)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
-        //     if (request.Name != null) campaign.Name = request.Name;
-        //     if (request.Notes != null) campaign.Notes = request.Notes;
-        //     if (request.Status.HasValue) campaign.Status = request.Status.Value;
-        //     if (request.Budget.HasValue) campaign.Budget = request.Budget.Value;
-        //     if (request.DailyBudget.HasValue) campaign.DailyBudget = request.DailyBudget.Value;
+            if (campaign == null)
+            {
+                return NotFound();
+            }
 
+            // Track changes to prevent unnecessary DB updates
+            bool isUpdated = false;
 
-        //     if (request.Platforms != null)
-        //     {
-        //         if (!Campaign.AreValidPlatforms(request.Platforms))
-        //         {
-        //             return BadRequest("Invalid platform values. Must be one or more of: Mobile, Desktop, Tablet");
-        //         }
-        //         campaign.Platforms = JsonSerializer.Serialize(request.Platforms);
-        //     }
+            if (!string.IsNullOrWhiteSpace(request.Name) && campaign.Name != request.Name)
+            {
+                campaign.Name = request.Name;
+                isUpdated = true;
+            }
 
-        //     if (request.Countries != null)
-        //     {
-        //         campaign.Countries = JsonSerializer.Serialize(request.Countries);
-        //     }
+            if (!string.IsNullOrWhiteSpace(request.Notes) && campaign.Notes != request.Notes)
+            {
+                campaign.Notes = request.Notes;
+                isUpdated = true;
+            }
 
-        //     if (request.VerticalIds != null)
-        //     {
-        //         var verticals = await _context.Verticals
-        //             .Where(v => request.VerticalIds.Contains(v.Id))
-        //             .ToListAsync();
+            if (request.Status.HasValue && campaign.Status != request.Status.Value)
+            {
+                campaign.Status = request.Status.Value;
+                isUpdated = true;
+            }
 
-        //         if (verticals.Count != request.VerticalIds.Length)
-        //         {
-        //             return BadRequest("One or more vertical IDs are invalid");
-        //         }
+            if (request.Budget.HasValue && campaign.Budget != request.Budget.Value)
+            {
+                campaign.Budget = request.Budget.Value;
+                isUpdated = true;
+            }
 
-        //         campaign.Verticals = verticals;
-        //     }
+            if (request.DailyBudget.HasValue && campaign.DailyBudget != request.DailyBudget.Value)
+            {
+                campaign.DailyBudget = request.DailyBudget.Value;
+                isUpdated = true;
+            }
 
-        //     campaign.UpdatedAt = DateTime.UtcNow;
+            if (request.LanderId.HasValue && campaign.LanderId != request.LanderId.Value)
+            {
+                bool landerExists = await _context.Landers.AnyAsync(l => l.Id == request.LanderId.Value);
+                if (!landerExists)
+                {
+                    return BadRequest("Invalid Lander ID.");
+                }
 
-        //     try
-        //     {
-        //         await _context.SaveChangesAsync();
-        //     }
-        //     catch (DbUpdateConcurrencyException)
-        //     {
-        //         if (!_context.Campaigns.Any(c => c.Id == id))
-        //         {
-        //             return NotFound();
-        //         }
-        //         else
-        //         {
-        //             throw;
-        //         }
-        //     }
+                campaign.LanderId = request.LanderId.Value;
+                isUpdated = true;
+            }
 
-        //     return NoContent();
-        // }
+            if (request.Platforms != null)
+            {
+                var uniquePlatforms = request.Platforms.Distinct().ToList();
+                if (uniquePlatforms.Any(p => !Enum.IsDefined(typeof(Platform), p)))
+                {
+                    return BadRequest("Invalid platform value.");
+                }
+
+                if (!campaign.Platforms.SequenceEqual(uniquePlatforms))
+                {
+                    campaign.Platforms = uniquePlatforms;
+                    isUpdated = true;
+                }
+            }
+
+            if (request.Countries != null)
+            {
+                var uniqueCountries = request.Countries.Distinct().ToList();
+                if (!campaign.Countries.SequenceEqual(uniqueCountries))
+                {
+                    campaign.Countries = uniqueCountries;
+                    isUpdated = true;
+                }
+            }
+
+            if (request.Verticals != null)
+            {
+                var verticals = await _context.Verticals
+                    .Where(v => request.Verticals.Contains(v.Id))
+                    .ToListAsync();
+
+                if (verticals.Count != request.Verticals.Length)
+                {
+                    return BadRequest("One or more vertical IDs are invalid.");
+                }
+
+                if (!campaign.Verticals.Select(v => v.Id).OrderBy(id => id)
+                        .SequenceEqual(verticals.Select(v => v.Id).OrderBy(id => id)))
+                {
+                    campaign.Verticals = verticals;
+                    isUpdated = true;
+                }
+            }
+
+            if (!isUpdated)
+            {
+                return NoContent();
+            }
+
+            campaign.UpdatedAt = DateTime.UtcNow;
+
+            // Model-level validation
+            try
+            {
+                campaign.Validate();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
 
         // // DELETE: api/Campaigns/5
         // [HttpDelete("{id}")]

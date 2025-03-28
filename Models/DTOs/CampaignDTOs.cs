@@ -50,19 +50,17 @@ namespace AdTechAPI.Models.DTOs
         [StringLength(100)]
         public string? Name { get; set; }
 
-        public string? Notes { get; set; }
 
-        public int Status { get; set; }
+        public int? LanderId { get; set; }
+
+        public string? Notes { get; set; }
+        public CampaignStatus? Status { get; set; }
 
         [Range(0, double.MaxValue)]
         public decimal? Budget { get; set; }
 
         [Range(0, double.MaxValue)]
         public decimal? DailyBudget { get; set; }
-
-        public DateTime? StartDate { get; set; }
-
-        public DateTime? EndDate { get; set; }
 
         [MinLength(1)]
         [MaxLength(3)]
