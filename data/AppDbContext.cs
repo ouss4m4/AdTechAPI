@@ -8,7 +8,7 @@ public class AppDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Campaign> Campaigns { get; set; }
     public DbSet<Vertical> Verticals { get; set; }
-
+    public DbSet<Country> Countries { get; set; }
     public DbSet<Lander> Landers { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }

@@ -4,7 +4,6 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -41,9 +40,11 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+// Seed the database
+if (app.Environment.IsDevelopment())
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    await app.SeedDatabaseAsync();
 }
+
+await app.RunAsync();
