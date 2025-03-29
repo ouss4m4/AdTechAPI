@@ -10,6 +10,7 @@ public class AppDbContext : DbContext
     public DbSet<Vertical> Verticals { get; set; }
     public DbSet<Country> Countries { get; set; }
     public DbSet<Lander> Landers { get; set; }
+    public DbSet<TrafficSource> TrafficSources { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 

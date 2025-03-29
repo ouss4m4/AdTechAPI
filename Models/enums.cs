@@ -31,4 +31,13 @@ namespace AdTechAPI.Enums
         Inactive = 4,
         Draft = 5,
     }
+
+    public enum TrafficType
+    {
+        Push = 1,
+        Email = 2,
+        Display = 3,
+        Native = 4,
+        SMS = 5
+    }
 }
