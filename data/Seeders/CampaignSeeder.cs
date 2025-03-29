@@ -10,50 +10,84 @@ namespace AdTechAPI.Data.Seeders
         {
             if (!context.Campaigns.Any())
             {
-                // Make sure required entities exist
-                var healthPlusClient = await context.Clients.FirstOrDefaultAsync(c => c.Name == "Health Plus Inc");
-                var financeDirectClient = await context.Clients.FirstOrDefaultAsync(c => c.Name == "Finance Direct");
-                var healthPlusLander = await context.Landers.FirstOrDefaultAsync(l => l.Name == "Health Plus Landing Page");
-                var financeDirectLander = await context.Landers.FirstOrDefaultAsync(l => l.Name == "Finance Direct Calculator");
 
-                if (healthPlusClient != null && financeDirectClient != null && 
-                    healthPlusLander != null && financeDirectLander != null)
-                {
-                    var campaigns = new List<Campaign>
+                var campaigns = new List<Campaign>
                     {
-                        new Campaign 
-                        { 
+                        new Campaign
+                        {
                             Name = "Health Plus Q2 Campaign",
-                            AdvertiserId = healthPlusClient.Id,
-                            LanderId = healthPlusLander.Id,
+                            AdvertiserId = 3,
+                            LanderId = 1,
                             Notes = "Q2 health products promotion",
                             Status = CampaignStatus.Active,
-                            Budget = 10000.00M,
-                            DailyBudget = 500.00M,
+                            Budget = 10000,
+                            DailyBudget = 500,
                             Platforms = new List<int> { (int)Platform.Mobile, (int)Platform.Desktop },
                             Countries = new List<int> { 1, 2 }, // US and UK
                             CreatedAt = DateTime.UtcNow,
                             UpdatedAt = DateTime.UtcNow
                         },
-                        new Campaign 
-                        { 
+                        new Campaign
+                        {
                             Name = "Finance Direct Calculator Campaign",
-                            AdvertiserId = financeDirectClient.Id,
-                            LanderId = financeDirectLander.Id,
+                            AdvertiserId = 3,
+                            LanderId = 2,
                             Notes = "Financial calculator promotion",
                             Status = CampaignStatus.Active,
-                            Budget = 15000.00M,
-                            DailyBudget = 750.00M,
-                            Platforms = new List<int> { (int)Platform.Desktop },
+                            Budget = 15000,
+                            DailyBudget = 750,
+                            Platforms = new List<int> { (int)Platform.Mobile, (int)Platform.Desktop },
+                            Countries = new List<int> { 1, 2, 3 }, // US, UK, and Canada
+                            CreatedAt = DateTime.UtcNow,
+                            UpdatedAt = DateTime.UtcNow
+                        },
+                        new Campaign
+                        {
+                            Name = "Finance Direct Calculator Campaign - Mobile ",
+                            AdvertiserId = 3,
+                            LanderId = 2,
+                            Notes = "Financial calculator promotion",
+                            Status = CampaignStatus.Active,
+                            Budget = 15000,
+                            DailyBudget = 750,
+                            Platforms = new List<int> { (int)Platform.Mobile },
                             Countries = new List<int> { 1, 2, 3 }, // US, UK, and Canada
                             CreatedAt = DateTime.UtcNow,
                             UpdatedAt = DateTime.UtcNow
                         }
+                        ,new Campaign
+                        {
+                            Name = "Finance Direct Calculator Campaign - Desktop",
+                            AdvertiserId = 3,
+                            LanderId = 2,
+                            Notes = "Financial calculator promotion",
+                            Status = CampaignStatus.Active,
+                            Budget = 15000,
+                            DailyBudget = 750,
+                            Platforms = new List<int> { (int)Platform.Desktop },
+                            Countries = new List<int> { 1, 2, 3 }, // US, UK, and Canada
+                            CreatedAt = DateTime.UtcNow,
+                            UpdatedAt = DateTime.UtcNow
+                        },new Campaign
+                        {
+                            Name = "Finance Direct Calculator Campaign- tablet",
+                            AdvertiserId = 3,
+                            LanderId = 2,
+                            Notes = "Financial calculator promotion",
+                            Status = CampaignStatus.Active,
+                            Budget = 15000,
+                            DailyBudget = 750,
+                            Platforms = new List<int> { (int)Platform.Tablet },
+                            Countries = new List<int> { 1, 2, 3 }, // US, UK, and Canada
+                            CreatedAt = DateTime.UtcNow,
+                            UpdatedAt = DateTime.UtcNow
+                        }
+
                     };
 
-                    await context.Campaigns.AddRangeAsync(campaigns);
-                    await context.SaveChangesAsync();
-                }
+                await context.Campaigns.AddRangeAsync(campaigns);
+                await context.SaveChangesAsync();
+
             }
         }
     }

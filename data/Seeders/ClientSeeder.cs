@@ -11,24 +11,24 @@ namespace AdTechAPI.Data.Seeders
             {
                 var clients = new List<Client>
                 {
-                    new Client 
-                    { 
-                        Name = "Health Plus Inc",
-                        Type = ClientType.Advertiser,
+                    new Client
+                    {
+                        Name = "Reset Digital",
+                        Type = ClientType.Owner,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     },
-                    new Client 
-                    { 
-                        Name = "Finance Direct",
-                        Type = ClientType.Advertiser,
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow
-                    },
-                    new Client 
-                    { 
-                        Name = "Global Media Group",
+                    new Client
+                    {
+                        Name = "Yahoo Pages - Pub",
                         Type = ClientType.Publisher,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    },
+                    new Client
+                    {
+                        Name = "Global Media Ads",
+                        Type = ClientType.Advertiser,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     }
