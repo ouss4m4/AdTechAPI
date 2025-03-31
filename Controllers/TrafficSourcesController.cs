@@ -1,3 +1,4 @@
+using AdTechAPI.Enums;
 using AdTechAPI.Models;
 using AdTechAPI.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -33,12 +34,23 @@ namespace AdTechAPI.Controllers
         public async Task<ActionResult<TSResponse>> CreateSource(CreateTSourceRequest dto)
         {
 
+            var publisher = await _context.Clients
+                .FirstOrDefaultAsync(c => c.Id == dto.PublisherId && c.Type == ClientType.Publisher);
+
+            if (publisher == null)
+            {
+                return BadRequest("Invalid publisher ID or client is not an publisher");
+            }
+
+
             TrafficSource TS = new TrafficSource
             {
                 Uuid = Guid.NewGuid(),
                 Name = dto.Name,
                 TrafficType = dto.TrafficType,
                 PublisherId = dto.PublisherId,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
             };
 
             _context.TrafficSources.Add(TS);

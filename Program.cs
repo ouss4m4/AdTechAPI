@@ -1,8 +1,17 @@
 using AdTechAPI.Extensions;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure Serilog for file logging
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()  // Logs to console
+    .WriteTo.File("Logs/myapp.log", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7) // Logs to file
+    .CreateLogger();
+
+// Add Serilog to the logging system
+builder.Host.UseSerilog();
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -15,11 +24,17 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Add our custom service extensions
+// ADD SERVICES (db,cache,auth...)
 builder.Services.AddDatabaseServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddJwtService(builder.Configuration);
 
+// ADD BACKGROUND SERVICES
+builder.Services.RegisterBackgroundServices();
+
+
+
+// HTTP 
 builder.Services.AddControllers();
 
 var app = builder.Build();
