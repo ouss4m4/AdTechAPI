@@ -11,22 +11,22 @@ namespace AdTechAPI.Data.Seeders
             {
                 var verticals = new List<Vertical>
                 {
-                    new Vertical 
-                    { 
+                    new Vertical
+                    {
                         Name = "Health & Wellness",
                         Description = "Health, fitness, and wellness products",
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     },
-                    new Vertical 
-                    { 
+                    new Vertical
+                    {
                         Name = "Finance",
                         Description = "Financial services and products",
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     },
-                    new Vertical 
-                    { 
+                    new Vertical
+                    {
                         Name = "E-commerce",
                         Description = "Online retail and shopping",
                         CreatedAt = DateTime.UtcNow,

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdTechAPI.Extensions
 {
-    public static class ServiceExtensions
+    public static class InfraServiceExtensions
     {
         public static IServiceCollection AddJwtAuthentication(
             this IServiceCollection services,

@@ -10,25 +10,25 @@ namespace AdTechAPI.Data.Seeders
             {
                 var countries = new List<Country>
                 {
-                    new Country 
-                    { 
-                        Name = "United States", 
+                    new Country
+                    {
+                        Name = "United States",
                         Code = "US",
                         Region = "North America",
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     },
-                    new Country 
-                    { 
-                        Name = "United Kingdom", 
+                    new Country
+                    {
+                        Name = "United Kingdom",
                         Code = "GB",
                         Region = "Europe",
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     },
-                    new Country 
-                    { 
-                        Name = "Canada", 
+                    new Country
+                    {
+                        Name = "Canada",
                         Code = "CA",
                         Region = "North America",
                         CreatedAt = DateTime.UtcNow,

@@ -40,4 +40,10 @@ namespace AdTechAPI.Enums
         Native = 4,
         SMS = 5
     }
+
+    public enum ClientStatus
+    {
+        Active = 1,
+        Inactive = 2
+    }
 }
