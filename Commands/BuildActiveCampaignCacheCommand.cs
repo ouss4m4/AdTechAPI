@@ -1,4 +1,4 @@
-using AdTechAPI.CacheBuildersServices;
+using AdTechAPI.CampaignsCache;
 
 namespace AdTechAPI.CLI
 {

@@ -2,68 +2,8 @@ using AdTechAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AdTechAPI.CacheBuildersServices
+namespace AdTechAPI.CampaignsCache
 {
-    public class CampaignWithVerticalDTO
-    {
-        public int Id
-        {
-            get; set;
-        }
-        public int AdvertiserId
-        {
-            get; set;
-        }
-        public decimal Budget
-        {
-            get; set;
-        }
-        public List<int>? Countries
-        {
-            get; set;
-        }
-        public int? CountryId
-        {
-            get; set;
-        }
-        public DateTime CreatedAt
-        {
-            get; set;
-        }
-        public decimal DailyBudget
-        {
-            get; set;
-        }
-        public int LanderId
-        {
-            get; set;
-        }
-        public string? Name
-        {
-            get; set;
-        }
-        public string? Notes
-        {
-            get; set;
-        }
-        public List<int>? Platforms
-        {
-            get; set;
-        }
-        public int Status
-        {
-            get; set;
-        }
-        public DateTime UpdatedAt
-        {
-            get; set;
-        }
-        public int? VerticalId
-        {
-            get; set;
-        } // Matches the exact column name from the SQL query
-    }
-
     public class BuildActiveCampaignsCache
     {
         /*
@@ -83,9 +23,9 @@ namespace AdTechAPI.CacheBuildersServices
         }
 
 
-        public async Task Run()
+        public async Task<List<CampaignWithVerticalDTO>> FetchActiveCampaigns()
         {
-            var activeCampaigns = await _context.Database
+            return await _context.Database
                 .SqlQuery<CampaignWithVerticalDTO>($@"
                     WITH ActiveClients AS (
                         SELECT ""Id""
@@ -95,18 +35,74 @@ namespace AdTechAPI.CacheBuildersServices
                     SELECT c.""Id"", c.""AdvertiserId"", c.""Budget"", c.""Countries"", c.""CountryId"", 
                            c.""CreatedAt"", c.""DailyBudget"", c.""LanderId"", c.""Name"", c.""Notes"", 
                            c.""Platforms"", c.""Status"", c.""UpdatedAt"",
-                           cv.""VerticalsId"" AS ""VerticalId""
+                           cv.""VerticalsId"" AS ""VerticalId"",
+                           l.""Url"" as ""LanderUrl""
                     FROM ""Campaigns"" AS c
                     JOIN ActiveClients AS ac ON c.""AdvertiserId"" = ac.""Id""
                     LEFT JOIN ""CampaignVerticals"" AS cv ON c.""Id"" = cv.""CampaignsId""
+                    LEFT JOIN ""Landers"" AS l ON l.""Id"" = c.""LanderId""
                     WHERE c.""Status"" = 1
                     ORDER BY c.""Id"", cv.""VerticalsId""
                 ")
                 .ToListAsync();
-
-
         }
 
+        public CampaignCacheStore FormatCampaignsToCacheStructure(List<CampaignWithVerticalDTO> campaigns)
+        {
+            // Create a nested dictionary to represent the cache structure
+            CampaignCacheStore campaignsStore = new();
+
+            foreach (var campaign in campaigns)
+            {
+                // start by [vertical][country] then [platform]
+                foreach (var country in campaign.Countries)
+                {
+
+                    // check vertical exist or add it
+                    if (!campaignsStore.Items.ContainsKey(campaign.VerticalId))
+                    {
+                        campaignsStore.Items[campaign.VerticalId] = [];
+                    }
+
+                    //  check country exist or add it
+                    if (!campaignsStore.Items[campaign.VerticalId].ContainsKey(country))
+                    {
+                        campaignsStore.Items[campaign.VerticalId][country] = [];
+                    }
+
+                    foreach (var platform in campaign.Platforms)
+                    {
+                        // check if there is already a platform or add it
+                        if (!campaignsStore.Items[campaign.VerticalId][country].ContainsKey(platform))
+                        {
+                            campaignsStore.Items[campaign.VerticalId][country][platform] = new HashSet<CampaignCacheData>(); ;
+                        }
+                        // Add campaign data to the cache with the proper keys
+                        campaignsStore.Items[campaign.VerticalId][country][platform].Add(new CampaignCacheData
+                        {
+                            CampaignId = campaign.Id,
+                            Name = campaign.Name,
+                            Status = campaign.Status,
+                            LanderUrl = campaign.LanderUrl
+                        });
+                    }
+                }
+            }
+            return campaignsStore;
+        }
+        public async Task Run()
+        {
+
+            var activeCampaigns = await FetchActiveCampaigns();
+
+            var activeCampaignsCacheStrucutre = FormatCampaignsToCacheStructure(activeCampaigns);
+
+            var json = System.Text.Json.JsonSerializer.Serialize(activeCampaignsCacheStrucutre, new System.Text.Json.JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+            Console.WriteLine(json);
+        }
 
     }
 }

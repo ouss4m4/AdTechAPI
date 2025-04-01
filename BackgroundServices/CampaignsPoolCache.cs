@@ -1,5 +1,5 @@
 
-using AdTechAPI.CacheBuildersServices;
+using AdTechAPI.CampaignsCache;
 using Cronos;
 namespace AdTechAPI.BackgroundServices
 {
@@ -29,7 +29,7 @@ namespace AdTechAPI.BackgroundServices
 
                 if (_nextRunTime <= now)
                 {
-                    UpdateCampaignCache();
+                    await UpdateCampaignCache();
                     _nextRunTime = _cronExpression.GetNextOccurrence(now, TimeZoneInfo.Utc) ?? now.AddMinutes(1);
                 }
 
