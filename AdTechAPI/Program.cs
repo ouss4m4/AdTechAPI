@@ -27,9 +27,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // ADD SERVICES (db,cache,auth...)
-builder.Services.AddDatabaseServices(builder.Configuration);
-builder.Services.AddApplicationServices();
-builder.Services.AddJwtService(builder.Configuration);
+builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.RegisterCommands();
 builder.Services.AddCacheBuildersService();
 // ADD BACKGROUND SERVICES

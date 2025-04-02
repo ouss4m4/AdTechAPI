@@ -9,47 +9,35 @@ namespace AdTechAPI.Extensions
 {
     public static class InfraServiceExtensions
     {
-        public static IServiceCollection AddJwtAuthentication(
+
+        public static IServiceCollection AddApplicationServices(
             this IServiceCollection services,
             IConfiguration configuration)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = configuration["Jwt:Issuer"],
-                        ValidAudience = configuration["Jwt:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ??
-                                throw new InvalidOperationException("JWT Key not found")))
-                    };
+                           .AddJwtBearer(options =>
+                           {
+                               options.TokenValidationParameters = new TokenValidationParameters
+                               {
+                                   ValidateIssuer = true,
+                                   ValidateAudience = true,
+                                   ValidateLifetime = true,
+                                   ValidateIssuerSigningKey = true,
+                                   ValidIssuer = configuration["Jwt:Issuer"],
+                                   ValidAudience = configuration["Jwt:Audience"],
+                                   IssuerSigningKey = new SymmetricSecurityKey(
+                                       Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ??
+                                           throw new InvalidOperationException("JWT Key not found")))
+                               };
 
-                    // Map our custom claims to standard identity claims
-                    options.MapInboundClaims = false;  // Disable default claim mapping
-                    options.TokenValidationParameters.NameClaimType = "name";
-                    options.TokenValidationParameters.RoleClaimType = "role";
-                });
+                               // Map our custom claims to standard identity claims
+                               options.MapInboundClaims = false;  // Disable default claim mapping
+                               options.TokenValidationParameters.NameClaimType = "name";
+                               options.TokenValidationParameters.RoleClaimType = "role";
+                           });
 
-            return services;
-        }
-
-        public static IServiceCollection AddApplicationServices(
-            this IServiceCollection services)
-        {
             services.AddScoped<IJwtService, JwtService>();
-            // Add other services here
-            return services;
-        }
 
-        public static IServiceCollection AddDatabaseServices(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
             var connectionString = configuration.GetConnectionString("PostgresDb");
             // Enable dynamic JSON serialization
             var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
@@ -59,16 +47,11 @@ namespace AdTechAPI.Extensions
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(dataSource));
 
+            services.AddScoped<IJwtService, JwtService>();
+
+            services.AddSingleton<RedisService>();
             return services;
         }
 
-        public static IServiceCollection AddJwtService(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            services.AddScoped<IJwtService>(sp =>
-                new JwtService(configuration));
-            return services;
-        }
     }
 }

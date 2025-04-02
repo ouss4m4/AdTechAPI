@@ -1,6 +1,5 @@
-using AdTechAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
+using AdTechAPI.Services;
 
 namespace AdTechAPI.CampaignsCache
 {
@@ -14,12 +13,13 @@ namespace AdTechAPI.CampaignsCache
 
         private readonly AppDbContext _context;
         private readonly ILogger<BuildActiveCampaignsCache> _logger;
+        private readonly RedisService _redis;
 
-        public BuildActiveCampaignsCache(AppDbContext context, ILogger<BuildActiveCampaignsCache> logger)
+        public BuildActiveCampaignsCache(AppDbContext context, ILogger<BuildActiveCampaignsCache> logger, RedisService redis)
         {
             _context = context;
             _logger = logger;
-
+            _redis = redis;
         }
 
 
@@ -100,11 +100,13 @@ namespace AdTechAPI.CampaignsCache
 
                 var activeCampaignsCacheStrucutre = FormatCampaignsToCacheStructure(activeCampaigns);
 
-                var json = System.Text.Json.JsonSerializer.Serialize(activeCampaignsCacheStrucutre, new System.Text.Json.JsonSerializerOptions
+                var json = System.Text.Json.JsonSerializer.Serialize(activeCampaignsCacheStrucutre.Items, new System.Text.Json.JsonSerializerOptions
                 {
                     WriteIndented = true
                 });
-                Console.WriteLine(json);
+
+                // SET The new campaign pool in cache
+                await _redis.Db.StringSetAsync("cache::campaigns_pool", json);
             }
         }
 
