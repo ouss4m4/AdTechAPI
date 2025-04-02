@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AdTechAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250401085232_AddClientStatusColumn")]
-    partial class AddClientStatusColumn
+    [Migration("20250402095457_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

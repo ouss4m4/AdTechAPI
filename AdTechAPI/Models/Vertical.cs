@@ -28,3 +28,14 @@ namespace AdTechAPI.Models
         public ICollection<Campaign> Campaigns { get; set; } = [];
     }
 }
+
+/*
+INSERT INTO public."Verticals" ("Name", "Description", "CreatedAt", "UpdatedAt")  
+VALUES  
+    ('Finance', 'Financial services and investments', NOW(), NOW()),  
+    ('Health', 'Healthcare and medical services', NOW(), NOW()),  
+    ('Technology', 'Software, hardware, and IT solutions', NOW(), NOW()),  
+    ('E-commerce', 'Online stores and marketplaces', NOW(), NOW()),  
+    ('Education', 'E-learning and educational resources', NOW(), NOW()),  
+    ('Travel', 'Tourism, flights, and accommodations', NOW(), NOW());  
+*/

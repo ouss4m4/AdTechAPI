@@ -95,13 +95,17 @@ namespace AdTechAPI.CampaignsCache
 
             var activeCampaigns = await FetchActiveCampaigns();
 
-            var activeCampaignsCacheStrucutre = FormatCampaignsToCacheStructure(activeCampaigns);
-
-            var json = System.Text.Json.JsonSerializer.Serialize(activeCampaignsCacheStrucutre, new System.Text.Json.JsonSerializerOptions
+            if (activeCampaigns.Count() > 0)
             {
-                WriteIndented = true
-            });
-            Console.WriteLine(json);
+
+                var activeCampaignsCacheStrucutre = FormatCampaignsToCacheStructure(activeCampaigns);
+
+                var json = System.Text.Json.JsonSerializer.Serialize(activeCampaignsCacheStrucutre, new System.Text.Json.JsonSerializerOptions
+                {
+                    WriteIndented = true
+                });
+                Console.WriteLine(json);
+            }
         }
 
     }
