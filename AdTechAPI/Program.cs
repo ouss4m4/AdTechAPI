@@ -1,5 +1,4 @@
 using AdTechAPI.CampaignsCache;
-using AdTechAPI.CLI;
 using AdTechAPI.Extensions;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -27,10 +26,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // ADD SERVICES (db,cache,auth...)
+builder.Services.AddInfraServices(builder.Configuration);
 builder.Services.AddApplicationServices(builder.Configuration);
-builder.Services.RegisterCommands();
-builder.Services.AddCacheBuildersService();
-// ADD BACKGROUND SERVICES
 builder.Services.RegisterBackgroundServices();
 
 
@@ -63,24 +60,6 @@ if (app.Environment.IsDevelopment())
     await app.SeedDatabaseAsync();
 }
 
-
-// Check if it's a CLI command
-// if (args.Length > 0)
-// TODO: Move commands to separate solution
-if (args.Length > 0 && args[0] == "cache:build-active-campaigns-cache")
-{
-    Console.WriteLine("---------------args");
-    Console.WriteLine(args[0]);
-
-    using var scope = app.Services.CreateScope();
-    var cacheBuilder = scope.ServiceProvider.GetRequiredService<BuildActiveCampaignsCache>();
-
-    Console.WriteLine("Running cache update from CLI...");
-    await cacheBuilder.Run();
-    Console.WriteLine("Campaign cache updated via CLI.");
-
-    return; // Exit after running the command
-}
 
 await app.RunAsync();
 
