@@ -4,13 +4,38 @@ using System.Text.Json;
 
 public class AppDbContext : DbContext
 {
-    public DbSet<Client> Clients { get; set; }
-    public DbSet<User> Users { get; set; }
-    public DbSet<Campaign> Campaigns { get; set; }
-    public DbSet<Vertical> Verticals { get; set; }
-    public DbSet<Country> Countries { get; set; }
-    public DbSet<Lander> Landers { get; set; }
-    public DbSet<TrafficSource> TrafficSources { get; set; }
+    public DbSet<Client> Clients
+    {
+        get; set;
+    }
+    public DbSet<User> Users
+    {
+        get; set;
+    }
+    public DbSet<Campaign> Campaigns
+    {
+        get; set;
+    }
+    public DbSet<Vertical> Verticals
+    {
+        get; set;
+    }
+    public DbSet<Country> Countries
+    {
+        get; set;
+    }
+    public DbSet<Lander> Landers
+    {
+        get; set;
+    }
+    public DbSet<TrafficSource> TrafficSources
+    {
+        get; set;
+    }
+    public DbSet<Placement> Placements
+    {
+        get; set;
+    }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
