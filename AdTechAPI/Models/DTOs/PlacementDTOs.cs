@@ -4,22 +4,22 @@ namespace AdTechAPI.Models.DTOs
 {
     public class CreatePlacementRequest
     {
-        public required string Name
+        public string Name
         {
             get; set;
         }
 
-        public required int PublisherId
+        public int PublisherId
         {
             get; set;
         }
 
-        public required int TrafficSourceId
+        public int TrafficSourceId
         {
             get; set;
         }
 
-        public required int[] Verticals
+        public int[] Verticals
         {
             get; set;
         } = [];

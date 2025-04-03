@@ -1,5 +1,9 @@
 using AdTechAPI.CampaignsCache;
 using AdTechAPI.Extensions;
+using AdTechAPI.Models.DTOs;
+using AdTechAPI.Validation;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
@@ -30,7 +34,8 @@ builder.Services.AddInfraServices(builder.Configuration);
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.RegisterBackgroundServices();
 
-
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddScoped<IValidator<CreatePlacementRequest>, CreatePlacementRequestValidator>();
 
 // HTTP 
 builder.Services.AddControllers();

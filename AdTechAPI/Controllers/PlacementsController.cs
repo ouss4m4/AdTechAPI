@@ -106,6 +106,7 @@ namespace AdTechAPI.Controllers
 
             var newPlacement = new Placement
             {
+                Uuid = Guid.NewGuid(),
                 Name = request.Name,
                 PublisherId = request.PublisherId,
                 TrafficSourceId = request.TrafficSourceId,

@@ -8,6 +8,11 @@ namespace AdTechAPI.Models
             get; set;
         }
 
+        public required Guid Uuid
+        {
+            get; set;
+        }
+
         public required string Name
         {
             get; set;
