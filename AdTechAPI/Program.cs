@@ -1,4 +1,3 @@
-using AdTechAPI.CampaignsCache;
 using AdTechAPI.Extensions;
 using AdTechAPI.Models.DTOs;
 using AdTechAPI.Validation;
@@ -6,6 +5,9 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Hangfire;
+using Hangfire.PostgreSql; // Optional if you want to persist jobs in Postgres
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +61,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+
+
+app.UseHangfireDashboard();
 // Seed the database
 if (app.Environment.IsDevelopment())
 {

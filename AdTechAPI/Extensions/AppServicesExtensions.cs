@@ -14,6 +14,7 @@ namespace AdTechAPI.Extensions
 
             services.AddScoped<BuildActiveCampaignsCache>();
             services.AddScoped<GenerateRollupHour>();
+            services.AddScoped<ClickService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                                        .AddJwtBearer(options =>

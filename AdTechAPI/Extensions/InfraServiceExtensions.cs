@@ -2,6 +2,8 @@
 using AdTechAPI.Services;
 using Npgsql;
 using Microsoft.EntityFrameworkCore;
+using Hangfire;
+using Hangfire.PostgreSql;
 
 namespace AdTechAPI.Extensions
 {
@@ -22,10 +24,17 @@ namespace AdTechAPI.Extensions
 
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(dataSource));
+            services.AddHangfire(config =>
+            config.UsePostgreSqlStorage(c =>
+                c.UseNpgsqlConnection(connectionString)));
+
+            services.AddHangfireServer();
 
             services.AddScoped<IJwtService, JwtService>();
 
             services.AddSingleton<RedisService>();
+
+
             return services;
         }
 
