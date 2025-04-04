@@ -37,6 +37,11 @@ public class AppDbContext : DbContext
         get; set;
     }
 
+    public DbSet<Click> Clicks
+    {
+        get; set;
+    }
+
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
