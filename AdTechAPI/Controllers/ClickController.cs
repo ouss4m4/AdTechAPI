@@ -70,6 +70,7 @@ namespace AdTechAPI.Controllers
 
                 // 5. Redirect to the campaign landing URL
                 // return campaign;
+
                 var click = new Click
                 {
                     Uuid = Guid.NewGuid(),
@@ -78,6 +79,7 @@ namespace AdTechAPI.Controllers
                     AdvertiserId = campaign.Advertiser.Id,
                     CampaignId = campaign.Id,
                     LanderId = campaign.LanderId,
+                    Revenue = Math.Round((decimal)(new Random().NextDouble() * (1.80 - 0.05) + 0.05), 2),
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 };

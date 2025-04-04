@@ -107,6 +107,8 @@ namespace AdTechAPI.CampaignsCache
 
                 // SET The new campaign pool in cache
                 await _redis.Db.StringSetAsync("cache::campaigns_pool", json);
+                _logger.LogInformation("Campaign cache updated at {Time}", DateTime.UtcNow);
+
             }
         }
 

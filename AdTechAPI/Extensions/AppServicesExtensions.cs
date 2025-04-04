@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using AdTechAPI.CampaignsCache;
 using AdTechAPI.Services;
+using AdTechAPI.Rollups;
 
 namespace AdTechAPI.Extensions
 {
@@ -11,7 +12,8 @@ namespace AdTechAPI.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
 
-            services.AddScoped<BuildActiveCampaignsCache, BuildActiveCampaignsCache>();
+            services.AddScoped<BuildActiveCampaignsCache>();
+            services.AddScoped<GenerateRollupHour>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                                        .AddJwtBearer(options =>

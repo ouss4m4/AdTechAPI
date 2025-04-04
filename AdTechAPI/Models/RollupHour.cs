@@ -1,72 +1,52 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AdTechAPI.Models
 {
-    public class Click
+    public class RollupHour
     {
-        [Required]
         public int Id
         {
             get; set;
         }
-        [Required]
-        public Guid Uuid
+
+        public DateOnly StatDate
+        {
+            get; set;
+        }
+        public DateTime StatHour
         {
             get; set;
         }
 
-        [Required]
-        public int PublisherId
+        public required int PublisherId
         {
             get; set;
         }
 
-        public virtual Client? Publisher
+        public required int TrafficSourceId
         {
             get; set;
         }
 
-        [Required]
-        public int TrafficSourceId
+        public required int AdvertiserId
         {
             get; set;
         }
 
-        public virtual TrafficSource? TrafficSource
+        public required int CampaignId
         {
             get; set;
         }
 
-        public int AdvertiserId
+        public required int LanderId
         {
             get; set;
         }
 
-        public virtual Client? Advertiser
+        public required int Clicks
         {
             get; set;
         }
-
-        public int CampaignId
-        {
-            get; set;
-        }
-        public virtual Campaign? Campaign
-        {
-            get; set;
-        }
-
-        public int LanderId
-        {
-            get; set;
-        }
-
-        public virtual Lander? Lander
-        {
-            get; set;
-        }
-
 
         [Column(TypeName = "numeric(10, 2)")]
         public decimal Revenue
@@ -84,4 +64,7 @@ namespace AdTechAPI.Models
         }
 
     }
+
+
 }
+
