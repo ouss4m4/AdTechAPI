@@ -85,5 +85,18 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Campaign>()
             .Property(c => c.Countries)
             .HasColumnType("jsonb");
+
+        modelBuilder.Entity<RollupHour>()
+            .HasIndex(r => new
+            {
+                r.StatDate,
+                r.StatHour,
+                r.PublisherId,
+                r.TrafficSourceId,
+                r.AdvertiserId,
+                r.CampaignId,
+                r.LanderId
+            })
+            .IsUnique();
     }
 }

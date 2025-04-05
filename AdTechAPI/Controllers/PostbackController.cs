@@ -49,7 +49,7 @@ namespace AdTechAPI.Controllers
 
             _backgroundJobs.Enqueue<ClickService>(svc => svc.UpdateClickRevenue(uuid, revenue));
 
-            return Accepted(); // 202 Accepted
+            return Accepted();
         }
     }
 }

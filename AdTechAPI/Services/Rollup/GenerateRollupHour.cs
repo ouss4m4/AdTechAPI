@@ -73,7 +73,20 @@ namespace AdTechAPI.Rollups
                             ""AdvertiserId"",
                             ""CampaignId"",
                             ""LanderId""
-                        ";
+                        ON CONFLICT (
+                            ""StatDate"",
+                            ""StatHour"",
+                            ""PublisherId"",
+                            ""TrafficSourceId"",
+                            ""AdvertiserId"",
+                            ""CampaignId"",
+                            ""LanderId""
+                        )
+                        DO UPDATE SET
+                            ""Clicks"" = EXCLUDED.""Clicks"",
+                            ""Revenue"" = EXCLUDED.""Revenue"",
+                            ""UpdatedAt"" = NOW() AT TIME ZONE 'UTC'
+                            ";
 
             await _db.Database.ExecuteSqlRawAsync(
                     sql,

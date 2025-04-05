@@ -1,7 +1,11 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace AdTechAPI.Models
 {
+    [Index(nameof(StatDate), nameof(StatHour), nameof(PublisherId), nameof(TrafficSourceId), nameof(AdvertiserId), nameof(CampaignId), nameof(LanderId))]
+
     public class RollupHour
     {
         public int Id
