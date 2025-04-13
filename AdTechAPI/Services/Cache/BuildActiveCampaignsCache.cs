@@ -32,8 +32,8 @@ namespace AdTechAPI.CampaignsCache
                         FROM ""Clients""
                         WHERE ""Status"" = 1
                     )
-                    SELECT c.""Id"", c.""AdvertiserId"", c.""Budget"", c.""Countries"", c.""CountryId"", 
-                           c.""CreatedAt"", c.""DailyBudget"", c.""LanderId"", c.""Name"", c.""Notes"", 
+                    SELECT c.""Id"", c.""AdvertiserId"", c.""Budget"", c.""Countries"", c.""CountryId"",
+                           c.""CreatedAt"", c.""DailyBudget"", c.""LanderId"", c.""Name"", c.""Notes"",
                            c.""Platforms"", c.""Status"", c.""UpdatedAt"",
                            cv.""VerticalsId"" AS ""VerticalId"",
                            l.""Url"" as ""LanderUrl""
@@ -95,7 +95,7 @@ namespace AdTechAPI.CampaignsCache
 
             var activeCampaigns = await FetchActiveCampaigns();
 
-            if (activeCampaigns.Count() > 0)
+            if (activeCampaigns.Count > 0)
             {
 
                 var activeCampaignsCacheStrucutre = FormatCampaignsToCacheStructure(activeCampaigns);

@@ -39,8 +39,17 @@ builder.Services.RegisterBackgroundServices();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddScoped<IValidator<CreatePlacementRequest>, CreatePlacementRequestValidator>();
 
-// HTTP 
+// HTTPs
 builder.Services.AddControllers();
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    // options.ListenLocalhost(5163); // HTTP
+    options.ListenLocalhost(5164, listenOptions =>
+    {
+        listenOptions.UseHttps();   // Enable HTTPS on different port
+    });
+});
 
 var app = builder.Build();
 
@@ -56,6 +65,7 @@ if (app.Environment.IsDevelopment())
 }
 
 // Add authentication middleware
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -1,17 +1,20 @@
-
-using AdTechAPI.CampaignsCache;
+using AdTechAPI.Rollups;
 using Cronos;
+
 namespace AdTechAPI.BackgroundServices
 {
-    class CampaignsPool : BackgroundService
+    public class GenerateRollupsSchedule : BackgroundService
     {
-        private readonly CronExpression _cronExpression = CronExpression.Parse("*/3 * * * *");
+
+
+        // private readonly CronExpression _cronExpression = CronExpression.Parse("*/3 * * * *"); // every 3 minutes
+        private readonly CronExpression _cronExpression = CronExpression.Parse("*/3 * * * *"); // every 3 minutes
         private DateTime _nextRunTime = DateTime.UtcNow;
 
-        private readonly ILogger<CampaignsPool> _logger;
+        private readonly ILogger<GenerateRollupsSchedule> _logger;
         private readonly IServiceScopeFactory _scopeFactory;
 
-        public CampaignsPool(IServiceScopeFactory scopeFactory, ILogger<CampaignsPool> logger)
+        public GenerateRollupsSchedule(IServiceScopeFactory scopeFactory, ILogger<GenerateRollupsSchedule> logger)
         {
             _scopeFactory = scopeFactory;
             _logger = logger;
@@ -20,15 +23,13 @@ namespace AdTechAPI.BackgroundServices
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Campaign cache started -----------");
-
             while (!stoppingToken.IsCancellationRequested)
             {
                 var now = DateTime.UtcNow;
 
                 if (_nextRunTime <= now)
                 {
-                    await UpdateCampaignCache();
+                    await ExecuteRollupHour();
                     _nextRunTime = _cronExpression.GetNextOccurrence(now, TimeZoneInfo.Utc) ?? now.AddMinutes(1);
                 }
 
@@ -37,14 +38,14 @@ namespace AdTechAPI.BackgroundServices
             }
         }
 
-        // private async Task UpdateCampaignCache()
-        public async Task UpdateCampaignCache()
+        public async Task ExecuteRollupHour()
         {
 
             using var scope = _scopeFactory.CreateScope();
-            var campaignCacheBuilder = scope.ServiceProvider.GetRequiredService<BuildActiveCampaignsCache>();
+            var generateRollup = scope.ServiceProvider.GetRequiredService<GenerateRollupHour>();
 
-            await campaignCacheBuilder.Run();
+            await generateRollup.Run();
+
 
         }
     }

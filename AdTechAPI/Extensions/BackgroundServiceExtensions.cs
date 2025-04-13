@@ -8,7 +8,7 @@ namespace AdTechAPI.Extensions
     {
         public static IServiceCollection RegisterBackgroundServices(this IServiceCollection services)
         {
-            services.AddHostedService<CampaignsPool>();
+            services.AddHostedService<CampaignsPoolCacheScheduler>();
             services.AddHostedService<GenerateRollupsSchedule>();
 
 

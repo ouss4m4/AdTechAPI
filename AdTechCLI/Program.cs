@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using AdTechAPI.CampaignsCache;
 using AdTechAPI.Extensions;
+using AdTechAPI.PlacementCache;
 
 namespace AdTechCLI.Commands
 {
@@ -31,6 +32,8 @@ namespace AdTechCLI.Commands
                     // Register API services (referencing AdTechAPI)
                     services.AddScoped<BuildActiveCampaignsCache>();
                     services.AddScoped<BuildActiveCampaignsCacheCommand>();
+                    services.AddScoped<BuildPlacementCache>();
+                    services.AddScoped<BuildPlacementsCacheCommands>();
 
                     // Register command dispatcher
                     services.AddSingleton<CommandDispatcher>();

@@ -12,6 +12,7 @@ namespace AdTechCLI.Commands
         {
             _serviceProvider = serviceProvider;
             _commands.Add("cache:build-active-campaigns", typeof(BuildActiveCampaignsCacheCommand));
+            _commands.Add("cache:build-active-placements", typeof(BuildPlacementsCacheCommands));
         }
 
         public async Task ExecuteAsync(string[] args)
