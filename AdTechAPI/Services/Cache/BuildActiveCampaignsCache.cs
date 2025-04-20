@@ -83,7 +83,8 @@ namespace AdTechAPI.CampaignsCache
                             CampaignId = campaign.Id,
                             Name = campaign.Name,
                             Status = campaign.Status,
-                            LanderUrl = campaign.LanderUrl
+                            LanderUrl = campaign.LanderUrl,
+                            LanderId = campaign.LanderId,
                         });
                     }
                 }

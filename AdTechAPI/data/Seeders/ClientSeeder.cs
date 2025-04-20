@@ -15,6 +15,7 @@ namespace AdTechAPI.Data.Seeders
                     {
                         Name = "Reset Digital",
                         Type = ClientType.Owner,
+                        Status = ClientStatus.Active,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     },
@@ -22,6 +23,7 @@ namespace AdTechAPI.Data.Seeders
                     {
                         Name = "Yahoo Pages - Pub",
                         Type = ClientType.Publisher,
+                        Status = ClientStatus.Active,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     },
@@ -29,6 +31,7 @@ namespace AdTechAPI.Data.Seeders
                     {
                         Name = "Global Media Ads",
                         Type = ClientType.Advertiser,
+                        Status = ClientStatus.Active,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     }

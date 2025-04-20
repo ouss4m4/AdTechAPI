@@ -10,7 +10,26 @@ namespace AdTechAPI.Data.Seeders
         {
             if (!context.Campaigns.Any())
             {
-                // Get all available verticals
+                // Get the advertiser client
+                var advertiser = await context.Clients
+                    .FirstOrDefaultAsync(c => c.Type == ClientType.Advertiser);
+
+                if (advertiser == null)
+                {
+                    throw new Exception("Advertiser client not found. Please run ClientSeeder first.");
+                }
+
+                // Get all landers for this advertiser
+                var landers = await context.Landers
+                    .Where(l => l.AdvertiserId == advertiser.Id)
+                    .ToListAsync();
+
+                if (!landers.Any())
+                {
+                    throw new Exception("Landers not found. Please run LanderSeeder first.");
+                }
+
+                // Get all verticals
                 var verticals = await context.Verticals.ToListAsync();
                 var random = new Random();
 
@@ -18,71 +37,71 @@ namespace AdTechAPI.Data.Seeders
                 {
                     new() {
                         Name = "Health Plus Q2 Campaign",
-                        AdvertiserId = 3,
-                        LanderId = 1,
+                        AdvertiserId = advertiser.Id,
+                        LanderId = landers[0].Id, // First lander
                         Notes = "Q2 health products promotion",
                         Status = CampaignStatus.Active,
                         Budget = 10000,
                         DailyBudget = 500,
                         Platforms = new List<int> { (int)Platform.Mobile, (int)Platform.Desktop },
                         Countries = new List<int> { 1, 2 }, // US and UK
-                        Verticals = verticals.OrderBy(x => random.Next()).Take(random.Next(1, 3)).ToList(),
+                        Verticals = verticals.Where(v => v.Name.Contains("Health")).ToList(),
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     },
                     new() {
                         Name = "Finance Direct Calculator Campaign",
-                        AdvertiserId = 3,
-                        LanderId = 2,
+                        AdvertiserId = advertiser.Id,
+                        LanderId = landers[1].Id, // Second lander
                         Notes = "Financial calculator promotion",
                         Status = CampaignStatus.Active,
                         Budget = 15000,
                         DailyBudget = 750,
                         Platforms = new List<int> { (int)Platform.Mobile, (int)Platform.Desktop },
                         Countries = new List<int> { 1, 2, 3 }, // US, UK, and Canada
-                        Verticals = verticals.OrderBy(x => random.Next()).Take(random.Next(1, 3)).ToList(),
+                        Verticals = verticals.Where(v => v.Name.Contains("Finance")).ToList(),
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     },
                     new() {
-                        Name = "Finance Direct Calculator Campaign - Mobile ",
-                        AdvertiserId = 3,
-                        LanderId = 2,
-                        Notes = "Financial calculator promotion",
+                        Name = "Finance Direct Calculator Campaign - Mobile",
+                        AdvertiserId = advertiser.Id,
+                        LanderId = landers[1].Id, // Second lander
+                        Notes = "Financial calculator promotion - Mobile only",
                         Status = CampaignStatus.Active,
                         Budget = 15000,
                         DailyBudget = 750,
                         Platforms = new List<int> { (int)Platform.Mobile },
                         Countries = new List<int> { 1, 2, 3 }, // US, UK, and Canada
-                        Verticals = verticals.OrderBy(x => random.Next()).Take(random.Next(1, 3)).ToList(),
+                        Verticals = verticals.Where(v => v.Name.Contains("Finance")).ToList(),
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     },
                     new() {
                         Name = "Finance Direct Calculator Campaign - Desktop",
-                        AdvertiserId = 3,
-                        LanderId = 2,
-                        Notes = "Financial calculator promotion",
+                        AdvertiserId = advertiser.Id,
+                        LanderId = landers[1].Id, // Second lander
+                        Notes = "Financial calculator promotion - Desktop only",
                         Status = CampaignStatus.Active,
                         Budget = 15000,
                         DailyBudget = 750,
                         Platforms = new List<int> { (int)Platform.Desktop },
                         Countries = new List<int> { 1, 2, 3 }, // US, UK, and Canada
-                        Verticals = verticals.OrderBy(x => random.Next()).Take(random.Next(1, 3)).ToList(),
+                        Verticals = verticals.Where(v => v.Name.Contains("Finance")).ToList(),
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     },
                     new() {
-                        Name = "Finance Direct Calculator Campaign- tablet",
-                        AdvertiserId = 3,
-                        LanderId = 2,
-                        Notes = "Financial calculator promotion",
+                        Name = "Finance Direct Calculator Campaign - Tablet",
+                        AdvertiserId = advertiser.Id,
+                        LanderId = landers[1].Id, // Second lander
+                        Notes = "Financial calculator promotion - Tablet only",
                         Status = CampaignStatus.Active,
                         Budget = 15000,
                         DailyBudget = 750,
                         Platforms = new List<int> { (int)Platform.Tablet },
                         Countries = new List<int> { 1, 2, 3 }, // US, UK, and Canada
-                        Verticals = verticals.OrderBy(x => random.Next()).Take(random.Next(1, 3)).ToList(),
+                        Verticals = verticals.Where(v => v.Name.Contains("Finance")).ToList(),
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     }

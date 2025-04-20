@@ -11,6 +11,8 @@ namespace AdTechAPI.Data
             await CountrySeeder.SeedAsync(context);
             await ClientSeeder.SeedAsync(context);
             await LanderSeeder.SeedAsync(context);
+            await TrafficSourceSeeder.SeedAsync(context);
+            await PlacementSeeder.SeedAsync(context);
             await CampaignSeeder.SeedAsync(context);
         }
     }
