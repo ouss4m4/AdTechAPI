@@ -1,19 +1,21 @@
 
-using AdTechAPI.CampaignsCache;
+using AdTechAPI.PlacementCache;
 using Cronos;
+
 namespace AdTechAPI.BackgroundServices
 {
-    class CampaignsPoolCacheScheduler(IServiceScopeFactory scopeFactory, ILogger<CampaignsPoolCacheScheduler> logger) : BackgroundService
+    class PlacementPoolCacheScheduler(IServiceScopeFactory scopeFactory, ILogger<PlacementPoolCacheScheduler> logger) : BackgroundService
     {
+
+
         private readonly CronExpression _cronExpression = CronExpression.Parse("*/3 * * * *");
         private DateTime _nextRunTime = DateTime.UtcNow;
-
-        private readonly ILogger<CampaignsPoolCacheScheduler> _logger = logger;
+        private readonly ILogger<PlacementPoolCacheScheduler> _logger = logger;
         private readonly IServiceScopeFactory _scopeFactory = scopeFactory;
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Campaign cache started -----------");
+            _logger.LogInformation("Placements cache started -----------");
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -21,7 +23,7 @@ namespace AdTechAPI.BackgroundServices
 
                 if (_nextRunTime <= now)
                 {
-                    await UpdateCampaignCache();
+                    await UpdatePlacementCache();
                     _nextRunTime = _cronExpression.GetNextOccurrence(now, TimeZoneInfo.Utc) ?? now.AddMinutes(1);
                 }
 
@@ -30,14 +32,14 @@ namespace AdTechAPI.BackgroundServices
             }
         }
 
-        // private async Task UpdateCampaignCache()
-        public async Task UpdateCampaignCache()
+
+        public async Task UpdatePlacementCache()
         {
 
             using var scope = _scopeFactory.CreateScope();
-            var campaignCacheBuilder = scope.ServiceProvider.GetRequiredService<BuildActiveCampaignsCache>();
+            var placementCacheBuilder = scope.ServiceProvider.GetRequiredService<BuildPlacementCache>();
 
-            await campaignCacheBuilder.Run();
+            await placementCacheBuilder.Run();
 
         }
     }

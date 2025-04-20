@@ -10,7 +10,7 @@ namespace AdTechAPI.Extensions
         {
             services.AddHostedService<CampaignsPoolCacheScheduler>();
             services.AddHostedService<GenerateRollupsSchedule>();
-
+            services.AddHostedService<PlacementPoolCacheScheduler>();
 
             // Resolve ILoggerFactory to create a logger
             using var serviceProvider = services.BuildServiceProvider();

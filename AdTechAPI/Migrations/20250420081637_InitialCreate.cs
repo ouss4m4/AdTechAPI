@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AdTechAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,6 +48,29 @@ namespace AdTechAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RollupHour",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    StatDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    StatHour = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    PublisherId = table.Column<int>(type: "integer", nullable: false),
+                    TrafficSourceId = table.Column<int>(type: "integer", nullable: false),
+                    AdvertiserId = table.Column<int>(type: "integer", nullable: false),
+                    CampaignId = table.Column<int>(type: "integer", nullable: false),
+                    LanderId = table.Column<int>(type: "integer", nullable: false),
+                    Clicks = table.Column<int>(type: "integer", nullable: false),
+                    Revenue = table.Column<decimal>(type: "numeric(10,2)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RollupHour", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Verticals",
                 columns: table => new
                 {
@@ -72,7 +95,9 @@ namespace AdTechAPI.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Url = table.Column<string>(type: "text", nullable: false),
                     Notes = table.Column<string>(type: "text", nullable: true),
-                    AdvertiserId = table.Column<int>(type: "integer", nullable: false)
+                    AdvertiserId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -176,6 +201,37 @@ namespace AdTechAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Placements",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Uuid = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    PublisherId = table.Column<int>(type: "integer", nullable: false),
+                    TrafficSourceId = table.Column<int>(type: "integer", nullable: false),
+                    Verticals = table.Column<List<int>>(type: "integer[]", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Placements", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Placements_Clients_PublisherId",
+                        column: x => x.PublisherId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Placements_TrafficSources_TrafficSourceId",
+                        column: x => x.TrafficSourceId,
+                        principalTable: "TrafficSources",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CampaignVerticals",
                 columns: table => new
                 {
@@ -195,6 +251,57 @@ namespace AdTechAPI.Migrations
                         name: "FK_CampaignVerticals_Verticals_VerticalsId",
                         column: x => x.VerticalsId,
                         principalTable: "Verticals",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Clicks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Uuid = table.Column<Guid>(type: "uuid", nullable: false),
+                    PublisherId = table.Column<int>(type: "integer", nullable: false),
+                    TrafficSourceId = table.Column<int>(type: "integer", nullable: false),
+                    AdvertiserId = table.Column<int>(type: "integer", nullable: false),
+                    CampaignId = table.Column<int>(type: "integer", nullable: false),
+                    LanderId = table.Column<int>(type: "integer", nullable: false),
+                    Revenue = table.Column<decimal>(type: "numeric(10,2)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clicks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Clicks_Campaigns_CampaignId",
+                        column: x => x.CampaignId,
+                        principalTable: "Campaigns",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Clicks_Clients_AdvertiserId",
+                        column: x => x.AdvertiserId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Clicks_Clients_PublisherId",
+                        column: x => x.PublisherId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Clicks_Landers_LanderId",
+                        column: x => x.LanderId,
+                        principalTable: "Landers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Clicks_TrafficSources_TrafficSourceId",
+                        column: x => x.TrafficSourceId,
+                        principalTable: "TrafficSources",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -220,9 +327,50 @@ namespace AdTechAPI.Migrations
                 column: "VerticalsId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Clicks_AdvertiserId",
+                table: "Clicks",
+                column: "AdvertiserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Clicks_CampaignId",
+                table: "Clicks",
+                column: "CampaignId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Clicks_LanderId",
+                table: "Clicks",
+                column: "LanderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Clicks_PublisherId",
+                table: "Clicks",
+                column: "PublisherId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Clicks_TrafficSourceId",
+                table: "Clicks",
+                column: "TrafficSourceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Landers_AdvertiserId",
                 table: "Landers",
                 column: "AdvertiserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Placements_PublisherId",
+                table: "Placements",
+                column: "PublisherId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Placements_TrafficSourceId",
+                table: "Placements",
+                column: "TrafficSourceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RollupHour_StatDate_StatHour_PublisherId_TrafficSourceId_Ad~",
+                table: "RollupHour",
+                columns: new[] { "StatDate", "StatHour", "PublisherId", "TrafficSourceId", "AdvertiserId", "CampaignId", "LanderId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_TrafficSources_PublisherId",
@@ -242,16 +390,25 @@ namespace AdTechAPI.Migrations
                 name: "CampaignVerticals");
 
             migrationBuilder.DropTable(
-                name: "TrafficSources");
+                name: "Clicks");
+
+            migrationBuilder.DropTable(
+                name: "Placements");
+
+            migrationBuilder.DropTable(
+                name: "RollupHour");
 
             migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
+                name: "Verticals");
+
+            migrationBuilder.DropTable(
                 name: "Campaigns");
 
             migrationBuilder.DropTable(
-                name: "Verticals");
+                name: "TrafficSources");
 
             migrationBuilder.DropTable(
                 name: "Countries");

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AdTechAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250404131120_RollupTableUpdate")]
-    partial class RollupTableUpdate
+    [Migration("20250420081637_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -265,6 +265,55 @@ namespace AdTechAPI.Migrations
                     b.HasIndex("TrafficSourceId");
 
                     b.ToTable("Placements");
+                });
+
+            modelBuilder.Entity("AdTechAPI.Models.RollupHour", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AdvertiserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CampaignId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Clicks")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("LanderId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PublisherId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Revenue")
+                        .HasColumnType("numeric(10, 2)");
+
+                    b.Property<DateOnly>("StatDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("StatHour")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("TrafficSourceId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StatDate", "StatHour", "PublisherId", "TrafficSourceId", "AdvertiserId", "CampaignId", "LanderId")
+                        .IsUnique();
+
+                    b.ToTable("RollupHour");
                 });
 
             modelBuilder.Entity("AdTechAPI.Models.TrafficSource", b =>

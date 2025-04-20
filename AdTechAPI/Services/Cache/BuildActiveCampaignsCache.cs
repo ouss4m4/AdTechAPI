@@ -95,21 +95,24 @@ namespace AdTechAPI.CampaignsCache
 
             var activeCampaigns = await FetchActiveCampaigns();
 
-            if (activeCampaigns.Count > 0)
+            if (activeCampaigns.Count == 0)
             {
-
-                var activeCampaignsCacheStrucutre = FormatCampaignsToCacheStructure(activeCampaigns);
-
-                var json = System.Text.Json.JsonSerializer.Serialize(activeCampaignsCacheStrucutre.Items, new System.Text.Json.JsonSerializerOptions
-                {
-                    WriteIndented = true
-                });
-
-                // SET The new campaign pool in cache
-                await _redis.Db.StringSetAsync("cache::campaigns_pool", json);
-                _logger.LogInformation("Campaign cache updated at {Time}", DateTime.UtcNow);
-
+                _logger.LogInformation("No active campaigns found.");
+                return;
             }
+
+
+            var activeCampaignsCacheStrucutre = FormatCampaignsToCacheStructure(activeCampaigns);
+
+            var json = System.Text.Json.JsonSerializer.Serialize(activeCampaignsCacheStrucutre.Items, new System.Text.Json.JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+            // SET The new campaign pool in cache
+            await _redis.Db.StringSetAsync("cache::campaigns_pool", json);
+            _logger.LogInformation("Campaign cache updated at {Time}", DateTime.UtcNow);
+
         }
 
     }

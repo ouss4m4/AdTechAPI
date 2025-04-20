@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using AdTechAPI.CampaignsCache;
 using AdTechAPI.Services;
 using AdTechAPI.Rollups;
+using AdTechAPI.PlacementCache;
 
 namespace AdTechAPI.Extensions
 {
@@ -14,6 +15,7 @@ namespace AdTechAPI.Extensions
 
             services.AddScoped<BuildActiveCampaignsCache>();
             services.AddScoped<GenerateRollupHour>();
+            services.AddScoped<BuildPlacementCache>();
             services.AddScoped<ClickService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
