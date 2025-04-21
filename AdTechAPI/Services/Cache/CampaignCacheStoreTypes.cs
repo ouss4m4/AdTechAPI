@@ -1,5 +1,10 @@
 namespace AdTechAPI.CampaignsCache
 {
+    public static class CampaignCacheKeys
+    {
+        public const string Pool = "cache::campaigns_pool";
+    }
+
     public class CampaignCacheData : IEquatable<CampaignCacheData>
     {
         public int CampaignId
@@ -39,10 +44,8 @@ namespace AdTechAPI.CampaignsCache
         }
     }
 
-    public class CampaignCacheStore
+    public class CampaignsCachePool : Dictionary<int, Dictionary<int, Dictionary<int, HashSet<CampaignCacheData>>>>
     {
-
-        public Dictionary<int, Dictionary<int, Dictionary<int, HashSet<CampaignCacheData>>>> Items { get; } = new();
     }
 
     public class CampaignWithVerticalDTO
@@ -51,6 +54,7 @@ namespace AdTechAPI.CampaignsCache
         {
             get; set;
         }
+
         public int AdvertiserId
         {
             get; set;

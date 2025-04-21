@@ -5,6 +5,7 @@ using AdTechAPI.CampaignsCache;
 using AdTechAPI.Services;
 using AdTechAPI.Rollups;
 using AdTechAPI.PlacementCache;
+using AdTechAPI.ClickServices;
 
 namespace AdTechAPI.Extensions
 {
@@ -17,6 +18,8 @@ namespace AdTechAPI.Extensions
             services.AddScoped<GenerateRollupHour>();
             services.AddScoped<BuildPlacementCache>();
             services.AddScoped<ClickService>();
+            services.AddScoped<ClickPlacementService>();
+            services.AddScoped<ClickCampaignService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                                        .AddJwtBearer(options =>

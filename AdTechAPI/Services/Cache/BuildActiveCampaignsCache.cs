@@ -47,10 +47,10 @@ namespace AdTechAPI.CampaignsCache
                 .ToListAsync();
         }
 
-        public CampaignCacheStore FormatCampaignsToCacheStructure(List<CampaignWithVerticalDTO> campaigns)
+        public CampaignsCachePool FormatCampaignsToCacheStructure(List<CampaignWithVerticalDTO> campaigns)
         {
             // Create a nested dictionary to represent the cache structure
-            CampaignCacheStore campaignsStore = new();
+            CampaignsCachePool campaignsStore = new();
 
             foreach (var campaign in campaigns)
             {
@@ -59,26 +59,26 @@ namespace AdTechAPI.CampaignsCache
                 {
 
                     // check vertical exist or add it
-                    if (!campaignsStore.Items.ContainsKey(campaign.VerticalId))
+                    if (!campaignsStore.ContainsKey(campaign.VerticalId))
                     {
-                        campaignsStore.Items[campaign.VerticalId] = [];
+                        campaignsStore[campaign.VerticalId] = [];
                     }
 
                     //  check country exist or add it
-                    if (!campaignsStore.Items[campaign.VerticalId].ContainsKey(country))
+                    if (!campaignsStore[campaign.VerticalId].ContainsKey(country))
                     {
-                        campaignsStore.Items[campaign.VerticalId][country] = [];
+                        campaignsStore[campaign.VerticalId][country] = [];
                     }
 
                     foreach (var platform in campaign.Platforms)
                     {
                         // check if there is already a platform or add it
-                        if (!campaignsStore.Items[campaign.VerticalId][country].ContainsKey(platform))
+                        if (!campaignsStore[campaign.VerticalId][country].ContainsKey(platform))
                         {
-                            campaignsStore.Items[campaign.VerticalId][country][platform] = new HashSet<CampaignCacheData>(); ;
+                            campaignsStore[campaign.VerticalId][country][platform] = new HashSet<CampaignCacheData>(); ;
                         }
                         // Add campaign data to the cache with the proper keys
-                        campaignsStore.Items[campaign.VerticalId][country][platform].Add(new CampaignCacheData
+                        campaignsStore[campaign.VerticalId][country][platform].Add(new CampaignCacheData
                         {
                             CampaignId = campaign.Id,
                             Name = campaign.Name,
@@ -105,13 +105,13 @@ namespace AdTechAPI.CampaignsCache
 
             var activeCampaignsCacheStrucutre = FormatCampaignsToCacheStructure(activeCampaigns);
 
-            var json = System.Text.Json.JsonSerializer.Serialize(activeCampaignsCacheStrucutre.Items, new System.Text.Json.JsonSerializerOptions
+            var json = System.Text.Json.JsonSerializer.Serialize(activeCampaignsCacheStrucutre, new System.Text.Json.JsonSerializerOptions
             {
                 WriteIndented = true
             });
 
             // SET The new campaign pool in cache
-            await _redis.Db.StringSetAsync("cache::campaigns_pool", json);
+            await _redis.Db.StringSetAsync(CampaignCacheKeys.Pool, json);
             _logger.LogInformation("Campaign cache updated at {Time}", DateTime.UtcNow);
 
         }

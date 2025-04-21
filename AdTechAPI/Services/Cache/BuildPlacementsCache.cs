@@ -23,17 +23,20 @@ public class BuildPlacementCache(
             .ToListAsync();
     }
 
-    public Dictionary<int, PlacementCacheData> BuildPlacementCacheData(List<Placement> placements)
+    public Dictionary<string, PlacementCacheData> BuildPlacementCacheData(List<Placement> placements)
     {
-        var dict = new Dictionary<int, PlacementCacheData>();
+        var dict = new Dictionary<string, PlacementCacheData>();
 
         foreach (var placement in placements)
         {
-            dict[placement.Id] = new PlacementCacheData
+            string uuid = placement.Uuid.ToString();
+            dict[uuid] = new PlacementCacheData
             {
                 PlacementId = placement.Id,
+                PlacementUuid = uuid,
                 PublisherId = placement.PublisherId,
-                TrafficSourceId = placement.TrafficSourceId
+                TrafficSourceId = placement.TrafficSourceId,
+                Verticals = [.. placement.Verticals]
             };
         }
 
