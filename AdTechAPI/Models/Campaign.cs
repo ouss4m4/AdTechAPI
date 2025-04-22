@@ -26,7 +26,7 @@ namespace AdTechAPI.Models
         {
             get; set;
         }
-        public Lander? Lander
+        public Lander Lander
         {
             get; set;
         }

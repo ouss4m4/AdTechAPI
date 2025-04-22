@@ -44,7 +44,7 @@ namespace AdTechAPI.Data.Seeders
                         Budget = 10000,
                         DailyBudget = 500,
                         Platforms = new List<int> { (int)Platform.Mobile, (int)Platform.Desktop },
-                        Countries = new List<int> { 1, 2 }, // US and UK
+                        Countries = new List<int> { 226, 227 },
                         Verticals = verticals.Where(v => v.Name.Contains("Health")).ToList(),
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
@@ -58,7 +58,7 @@ namespace AdTechAPI.Data.Seeders
                         Budget = 15000,
                         DailyBudget = 750,
                         Platforms = new List<int> { (int)Platform.Mobile, (int)Platform.Desktop },
-                        Countries = new List<int> { 1, 2, 3 }, // US, UK, and Canada
+                        Countries = new List<int> { 226, 227, 39 }, // US, UK, and Canada
                         Verticals = verticals.Where(v => v.Name.Contains("Finance")).ToList(),
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
@@ -72,7 +72,7 @@ namespace AdTechAPI.Data.Seeders
                         Budget = 15000,
                         DailyBudget = 750,
                         Platforms = new List<int> { (int)Platform.Mobile },
-                        Countries = new List<int> { 1, 2, 3 }, // US, UK, and Canada
+                        Countries = new List<int> { 226, 227, 39 }, // US, UK, and Canada
                         Verticals = verticals.Where(v => v.Name.Contains("Finance")).ToList(),
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
@@ -86,7 +86,7 @@ namespace AdTechAPI.Data.Seeders
                         Budget = 15000,
                         DailyBudget = 750,
                         Platforms = new List<int> { (int)Platform.Desktop },
-                        Countries = new List<int> { 1, 2, 3 }, // US, UK, and Canada
+                        Countries = new List<int> { 226, 227, 39 }, // US, UK, and Canada
                         Verticals = verticals.Where(v => v.Name.Contains("Finance")).ToList(),
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
@@ -100,7 +100,7 @@ namespace AdTechAPI.Data.Seeders
                         Budget = 15000,
                         DailyBudget = 750,
                         Platforms = new List<int> { (int)Platform.Tablet },
-                        Countries = new List<int> { 1, 2, 3 }, // US, UK, and Canada
+                        Countries = new List<int> { 226, 227, 39 }, // US, UK, and Canada
                         Verticals = verticals.Where(v => v.Name.Contains("Finance")).ToList(),
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow

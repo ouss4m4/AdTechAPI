@@ -8,18 +8,20 @@ namespace AdTechAPI.Models
         {
             get; set;
         }
+        public required string Iso
+        {
+            get; set;
+        }
         public required string Name
         {
             get; set;
         }
-        public required string Code
-        {
-            get; set;
-        }  // ISO 2-letter country code
-        public string? Region
+
+        public required string NiceName
         {
             get; set;
         }
+
         public DateTime CreatedAt
         {
             get; set;

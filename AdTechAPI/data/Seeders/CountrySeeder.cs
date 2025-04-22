@@ -1,4 +1,5 @@
 using AdTechAPI.Models;
+using System.Globalization;
 
 namespace AdTechAPI.Data.Seeders
 {
@@ -6,36 +7,39 @@ namespace AdTechAPI.Data.Seeders
     {
         public static async Task SeedAsync(AppDbContext context)
         {
-            if (!context.Countries.Any())
+            if (context.Countries.Any())
+                return;
+
+            var countries = new List<Country>();
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "data/Seeders", "countries.csv");
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException("countries.csv file not found", filePath);
+
+            var lines = await File.ReadAllLinesAsync(filePath);
+
+            foreach (var line in lines.Skip(1))
             {
-                var countries = new List<Country>
+                var parts = line.Split(',');
+
+                if (parts.Length < 4)
+                    continue;
+
+                var country = new Country
                 {
-                    new() {
-                        Name = "United States",
-                        Code = "US",
-                        Region = "North America",
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow
-                    },
-                    new() {
-                        Name = "United Kingdom",
-                        Code = "GB",
-                        Region = "Europe",
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow
-                    },
-                    new() {
-                        Name = "Canada",
-                        Code = "CA",
-                        Region = "North America",
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow
-                    }
+                    Id = int.Parse(parts[0]),
+                    Iso = parts[1].Trim(),
+                    Name = parts[2].Trim(),
+                    NiceName = parts[3].Trim(),
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
                 };
 
-                await context.Countries.AddRangeAsync(countries);
-                await context.SaveChangesAsync();
+                countries.Add(country);
             }
+
+            await context.Countries.AddRangeAsync(countries);
+            await context.SaveChangesAsync();
         }
     }
 }

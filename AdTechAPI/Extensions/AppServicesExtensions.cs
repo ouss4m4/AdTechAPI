@@ -14,12 +14,16 @@ namespace AdTechAPI.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
 
+            var geoPath = Path.Combine(Directory.GetCurrentDirectory(), "GeoIP", "GeoLite2-Country.mmdb");
+            services.AddSingleton(new GeoIPService(geoPath));
+
             services.AddScoped<BuildActiveCampaignsCache>();
             services.AddScoped<GenerateRollupHour>();
             services.AddScoped<BuildPlacementCache>();
             services.AddScoped<ClickService>();
             services.AddScoped<ClickPlacementService>();
             services.AddScoped<ClickCampaignService>();
+
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                                        .AddJwtBearer(options =>

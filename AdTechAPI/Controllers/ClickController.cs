@@ -1,52 +1,81 @@
-using System.Text.Json;
 using AdTechAPI.CampaignsCache;
 using AdTechAPI.ClickServices;
 using AdTechAPI.Models;
-using AdTechAPI.PlacementCache;
 using AdTechAPI.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
+using AdTechAPI.Helpers;
+using AdTechAPI.Enums;
 
 namespace AdTechAPI.Controllers
 {
     [ApiController]
     [Route("")]
-    public class ClickController : ControllerBase
+    public class ClickController(AppDbContext db, RedisService redis, ILogger<ClickController> logger, ClickPlacementService placementService, ClickCampaignService campaignService, GeoIPService geoIp) : ControllerBase
     {
-        private readonly AppDbContext _db;
-        private readonly RedisService _redis;
-        private readonly ILogger<ClickController> _logger;
-        private readonly ClickPlacementService _placementService;
-        private readonly ClickCampaignService _campaignService;
-        public ClickController(AppDbContext db, RedisService redis, ILogger<ClickController> logger, ClickPlacementService placementService, ClickCampaignService campaignService)
-        {
-            _db = db;
-            _redis = redis;
-            _logger = logger;
-            _placementService = placementService;
-            _campaignService = campaignService;
-        }
+        private readonly AppDbContext _db = db;
+        private readonly RedisService _redis = redis;
+        private readonly ILogger<ClickController> _logger = logger;
+        private readonly ClickPlacementService _placementService = placementService;
+        private readonly ClickCampaignService _campaignService = campaignService;
+        private readonly GeoIPService _geoIp = geoIp;
 
         [HttpGet("in/{placementUuid}")]
         public async Task<dynamic> HandleClick(string placementUuid)
         {
 
-            // Step 1: get the placement
+            /**
+            * Validate User Agent. Device (phone, tablet, desktop)
+            * get DeviceId
+            */
+            var userAgent = Request.Headers.UserAgent.ToString();
+            if (userAgent == null)
+            {
+                return BadRequest("User Agent not found");
+            }
+
+            int DeviceId = DeviceHelper.GetDeviceIdFromUserAgent(userAgent);
+            var forwardedIp = Request.Headers["X-Forwarded-For"].FirstOrDefault();
+            var ip = !string.IsNullOrEmpty(forwardedIp)
+                ? forwardedIp
+                : HttpContext.Connection.RemoteIpAddress?.ToString();
+
+            if (ip == null)
+            {
+                return BadRequest("User IP not found");
+            }
+
+            /**
+            * GeoLocate using IP.
+            * Get CountryId
+            */
+            var CountryIso = _geoIp.GetCountryIso(ip);
+            if (string.IsNullOrEmpty(CountryIso))
+            {
+                return BadRequest("Can not locate user");
+            }
+
+            // TODO: Cache countries instead of DB
+            var Country = await _db.Countries.Where(c => c.Iso == CountryIso).FirstOrDefaultAsync();
+            if (Country == null)
+            {
+                return BadRequest($"Can not find Country {CountryIso}");
+
+            }
+
+            // STEP 1: Get The Placement
             var placement = await _placementService.GetPlacementByUuidAsync(placementUuid);
             if (placement == null)
             {
                 return NotFound("Placement not found");
             }
-            // [vertical][country]
-            // step2: Get the Verticals - Country - Platform
-            int[] verticalsIds = placement.Verticals;
 
-            int deviceId = 3;
-            int countryId = 1;
+            // step2: Get the Verticals from placement
+            int[] VerticalsIds = placement.Verticals;
 
-            // step3: get active campaigns for Vertical, Country, DEvice
-            List<CampaignCacheData> candidateCampaigns = await _campaignService.GetCandidateCampaigns(verticalsIds, countryId, deviceId);
+            // step3: get active campaigns for Vertical, Country, Device
+            List<CampaignCacheData> candidateCampaigns = await _campaignService.GetCandidateCampaigns(VerticalsIds, Country.Id, DeviceId);
             if (candidateCampaigns.Count == 0)
             {
                 return NotFound("No campaign available");
@@ -90,7 +119,8 @@ namespace AdTechAPI.Controllers
 
             await _db.SaveChangesAsync();
 
-            return Ok(campaign);
+            // return Ok(campaign);
+            return Redirect(campaign.Lander.Url);
         }
 
 
