@@ -61,7 +61,7 @@ namespace AdTechAPI.ClickServices
                     }
                     foreach (var campaign in deviceCampaigns)
                     {
-                        candidateCampaigns.Add(campaign.CampaignId, campaign);
+                        candidateCampaigns.TryAdd(campaign.CampaignId, campaign);
                     }
 
                 }
@@ -75,22 +75,25 @@ namespace AdTechAPI.ClickServices
                 // fallback to the db and grab the campaigns if cache fails.
                 _logger.LogError(ex, "Failed to get placement from cache. Falling back to DB.");
 
+                var serializedCountryId = JsonSerializer.Serialize(new[] { countryId });
+                var serializedDeviceId = JsonSerializer.Serialize(new[] { deviceId });
+
                 var campaigns = await _db.Campaigns
                     .Where(c => c.Verticals.Any(v => verticalsIds.Contains(v.Id)))
-                    .Where(c => c.Countries.Any(c => c == countryId))
-                    .Where(c => c.Platforms.Any(p => p == deviceId))
+                    .Where(c => EF.Functions.JsonContains(c.Countries, serializedCountryId))
+                    .Where(c => EF.Functions.JsonContains(c.Platforms, serializedDeviceId))
                     .Include(c => c.Verticals)
                     .Include(c => c.Lander)
                     .ToListAsync();
 
-                return campaigns.Select(camp => new CampaignCacheData
+                return [.. campaigns.Select(camp => new CampaignCacheData
                 {
                     LanderId = camp.LanderId,
                     CampaignId = camp.Id,
                     LanderUrl = camp.Lander?.Url ?? "",
                     Name = camp.Name,
                     Status = (int)camp.Status
-                }).ToList();
+                })];
             }
 
         }

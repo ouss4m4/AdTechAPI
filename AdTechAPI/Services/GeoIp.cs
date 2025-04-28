@@ -13,6 +13,8 @@ namespace AdTechAPI.Services
 
         public string? GetCountryIso(string ip)
         {
+            if (ip == "127.0.0.1") return "AE";
+
             try
             {
                 var response = _reader.Country(ip);

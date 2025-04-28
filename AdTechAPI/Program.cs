@@ -6,7 +6,6 @@ using FluentValidation.AspNetCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Hangfire;
-using Hangfire.PostgreSql; // Optional if you want to persist jobs in Postgres
 
 
 var builder = WebApplication.CreateBuilder(args);

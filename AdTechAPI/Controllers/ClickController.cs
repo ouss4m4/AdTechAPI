@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 using AdTechAPI.Helpers;
-using AdTechAPI.Enums;
+using AdTechAPI.CachedData;
 
 namespace AdTechAPI.Controllers
 {
     [ApiController]
     [Route("")]
-    public class ClickController(AppDbContext db, RedisService redis, ILogger<ClickController> logger, ClickPlacementService placementService, ClickCampaignService campaignService, GeoIPService geoIp) : ControllerBase
+    public class ClickController(AppDbContext db, RedisService redis, ILogger<ClickController> logger, ClickPlacementService placementService, ClickCampaignService campaignService, GeoIPService geoIp, CountriesCache countriesCache) : ControllerBase
     {
         private readonly AppDbContext _db = db;
         private readonly RedisService _redis = redis;
@@ -20,6 +20,7 @@ namespace AdTechAPI.Controllers
         private readonly ClickPlacementService _placementService = placementService;
         private readonly ClickCampaignService _campaignService = campaignService;
         private readonly GeoIPService _geoIp = geoIp;
+        private readonly CountriesCache _countriesCache = countriesCache;
 
         [HttpGet("in/{placementUuid}")]
         public async Task<dynamic> HandleClick(string placementUuid)
@@ -53,16 +54,12 @@ namespace AdTechAPI.Controllers
             var CountryIso = _geoIp.GetCountryIso(ip);
             if (string.IsNullOrEmpty(CountryIso))
             {
-                return BadRequest("Can not locate user");
+                return BadRequest($"Can not locate user, countrIso {CountryIso}");
             }
 
-            // TODO: Cache countries instead of DB
-            var Country = await _db.Countries.Where(c => c.Iso == CountryIso).FirstOrDefaultAsync();
-            if (Country == null)
-            {
-                return BadRequest($"Can not find Country {CountryIso}");
 
-            }
+            var CountryId = await _countriesCache.GetCountryIdByIso(CountryIso) ?? 0;
+
 
             // STEP 1: Get The Placement
             var placement = await _placementService.GetPlacementByUuidAsync(placementUuid);
@@ -75,7 +72,7 @@ namespace AdTechAPI.Controllers
             int[] VerticalsIds = placement.Verticals;
 
             // step3: get active campaigns for Vertical, Country, Device
-            List<CampaignCacheData> candidateCampaigns = await _campaignService.GetCandidateCampaigns(VerticalsIds, Country.Id, DeviceId);
+            List<CampaignCacheData> candidateCampaigns = await _campaignService.GetCandidateCampaigns(VerticalsIds, CountryId, DeviceId);
             if (candidateCampaigns.Count == 0)
             {
                 return NotFound("No campaign available");
@@ -86,8 +83,6 @@ namespace AdTechAPI.Controllers
             var random = new Random();
             var bestFit = candidateCampaigns[random.Next(candidateCampaigns.Count)];
 
-
-            // TODO: we get campaign id from cache. query it (later: Have a campaigns cache, no db calls. and only ids in campaignsStore)
             var campaign = await _db.Campaigns
                 .Include(c => c.Lander)
                 .Include(c => c.Advertiser)
@@ -98,7 +93,7 @@ namespace AdTechAPI.Controllers
             }
 
             // 4. Log the click event
-            // await _campaignService.LogClickAsync(placement.Id, campaign.Id);
+            _logger.LogInformation("Click from Placement Id: {placement.Id} matched with campaign ID: {campaign.Id}", placement.PlacementId, campaign.Id);
 
             // 5. Redirect to the campaign landing URL
             // return campaign;
@@ -117,7 +112,9 @@ namespace AdTechAPI.Controllers
             };
             _db.Clicks.Add(click);
 
-            await _db.SaveChangesAsync();
+            // Raise click to Kafka. instead of going to the db. so we can Batch
+            // await _db.SaveChangesAsync();
+
 
             // return Ok(campaign);
             return Redirect(campaign.Lander.Url);

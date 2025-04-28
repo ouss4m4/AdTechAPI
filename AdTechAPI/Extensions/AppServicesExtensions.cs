@@ -6,6 +6,7 @@ using AdTechAPI.Services;
 using AdTechAPI.Rollups;
 using AdTechAPI.PlacementCache;
 using AdTechAPI.ClickServices;
+using AdTechAPI.CachedData;
 
 namespace AdTechAPI.Extensions
 {
@@ -23,6 +24,7 @@ namespace AdTechAPI.Extensions
             services.AddScoped<ClickService>();
             services.AddScoped<ClickPlacementService>();
             services.AddScoped<ClickCampaignService>();
+            services.AddScoped<CountriesCache>();
 
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

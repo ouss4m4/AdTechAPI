@@ -3,21 +3,18 @@ using AdTechAPI.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AdTechAPI.Enums;
+using Hangfire;
+using AdTechAPI.CampaignsCache;
 
 
 namespace AdTechAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CampaignsController : ControllerBase
+    public class CampaignsController(AppDbContext context, IBackgroundJobClient backgroundJobs) : ControllerBase
     {
-        private readonly AppDbContext _context;
-
-        public CampaignsController(AppDbContext context)
-        {
-            _context = context;
-        }
-
+        private readonly IBackgroundJobClient _backgroundJobs = backgroundJobs;
+        private readonly AppDbContext _context = context;
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CampaignResponse>>> GetCampaigns()
@@ -98,6 +95,7 @@ namespace AdTechAPI.Controllers
                 Platforms = request.Platforms.ToList(),
                 Countries = request.Countries.ToList(),
                 Verticals = verticals,
+                Status = request.Status,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -108,7 +106,12 @@ namespace AdTechAPI.Controllers
             _context.Campaigns.Add(campaign);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetCampaign), new { id = campaign.Id }, new CampaignResponse
+            _backgroundJobs.Enqueue<BuildActiveCampaignsCache>(svc => svc.Run());
+
+            return CreatedAtAction(nameof(GetCampaign), new
+            {
+                id = campaign.Id
+            }, new CampaignResponse
             {
                 Id = campaign.Id,
                 Name = campaign.Name,
@@ -246,6 +249,8 @@ namespace AdTechAPI.Controllers
             }
 
             await _context.SaveChangesAsync();
+            _backgroundJobs.Enqueue<BuildActiveCampaignsCache>(svc => svc.Run());
+
             return NoContent();
         }
 

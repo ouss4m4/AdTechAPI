@@ -1,8 +1,5 @@
-using System.Threading.Tasks;
-using AdTechAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.ObjectPool;
 using Hangfire;
 using AdTechAPI.Services;
 
