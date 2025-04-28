@@ -10,7 +10,7 @@ namespace AdTechAPI.Services
             get;
         }
 
-        public RedisService(string connectionString = "localhost")
+        public RedisService(string connectionString)
         {
             _redis = ConnectionMultiplexer.Connect(connectionString);
             Db = _redis.GetDatabase();

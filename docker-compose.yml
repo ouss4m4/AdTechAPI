@@ -1,4 +1,32 @@
 services:
+  api:
+    build:
+      context: ./AdTechAPI
+      dockerfile: Dockerfile
+    container_name: adtech_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__PostgresDb=Host=db;Port=5432;Database=adtech;Username=admin;Password=password
+      - ConnectionStrings__CacheDb=cache:6379
+    ports:
+      - "5005:8080"
+    depends_on:
+      - db
+      - cache
+    networks:
+      - app-network
+
+  cli:
+    build:
+      context: ./AdTechCLI
+      dockerfile: Dockerfile
+    container_name: adtech_cli
+    depends_on:
+      - db
+      - cache
+    networks:
+      - app-network
+
   db:
     image: postgres:13
     container_name: adtech_db
@@ -12,6 +40,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - app-network
+
   cache:
     image: redis:latest
     container_name: adtech_cache

@@ -32,7 +32,7 @@ namespace AdTechAPI.Extensions
 
             services.AddScoped<IJwtService, JwtService>();
 
-            services.AddSingleton<RedisService>();
+            services.AddSingleton(provider => new RedisService(configuration.GetConnectionString("CacheDb") ?? "localhost"));
 
 
             return services;

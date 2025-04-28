@@ -2,14 +2,9 @@ using MaxMind.GeoIP2;
 
 namespace AdTechAPI.Services
 {
-    public class GeoIPService
+    public class GeoIPService(string dbPath)
     {
-        private readonly DatabaseReader _reader;
-
-        public GeoIPService(string dbPath)
-        {
-            _reader = new DatabaseReader(dbPath);
-        }
+        private readonly DatabaseReader _reader = new DatabaseReader(dbPath);
 
         public string? GetCountryIso(string ip)
         {
