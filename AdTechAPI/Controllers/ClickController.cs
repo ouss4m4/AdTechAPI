@@ -51,10 +51,10 @@ namespace AdTechAPI.Controllers
             * GeoLocate using IP.
             * Get CountryId
             */
-            var CountryIso = _geoIp.GetCountryIso(ip);
+            var CountryIso = _geoIp.GetCountryIso(ip) ?? "US";
             if (string.IsNullOrEmpty(CountryIso))
             {
-                return BadRequest($"Can not locate user, countrIso {CountryIso}");
+                return BadRequest($"Can not locate user, ip: {ip}, countryIso {CountryIso}");
             }
 
 

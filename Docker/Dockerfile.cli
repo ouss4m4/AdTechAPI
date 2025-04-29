@@ -1,0 +1,21 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0 as base
+WORKDIR /app
+EXPOSE 8080
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+
+COPY AdTechAPI/AdTechAPI.csproj AdTechAPI/
+COPY AdTechCLI/AdTechCLI.csproj AdTechCLI/
+
+RUN dotnet restore "AdTechAPI/AdTechAPI.csproj"
+RUN dotnet restore "AdTechCLI/AdTechCLI.csproj"
+
+COPY AdTechAPI/ AdTechAPI/
+COPY AdTechCLI/ AdTechCLI/
+
+RUN dotnet publish "AdTechCLI/AdTechCLI.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=build /app/publish .

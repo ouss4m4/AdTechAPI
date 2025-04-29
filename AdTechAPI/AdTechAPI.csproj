@@ -33,6 +33,9 @@
         <Content Include="GeoIP/GeoLite2-Country.mmdb">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Content Include="data/Seeders/countries.csv">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>

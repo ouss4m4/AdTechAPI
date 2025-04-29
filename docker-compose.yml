@@ -1,8 +1,8 @@
 services:
   api:
     build:
-      context: ./AdTechAPI
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Docker/Dockerfile.api
     container_name: adtech_api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -18,8 +18,8 @@ services:
 
   cli:
     build:
-      context: ./AdTechCLI
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Docker/Dockerfile.cli
     container_name: adtech_cli
     depends_on:
       - db
